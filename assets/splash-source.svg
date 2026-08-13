@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1284" height="2778" viewBox="0 0 1284 2778">
+  <rect width="1284" height="2778" fill="#090D16"/>
+  <circle cx="642" cy="1120" r="265" fill="#0F172A" stroke="#38BDF8" stroke-width="14"/>
+  <path d="M690 820 465 1155h155l-35 255 242-357H665z"
+        fill="#FBBF24" stroke="#FFF7AE" stroke-width="10" stroke-linejoin="round"/>
+  <text x="642" y="1530" text-anchor="middle" fill="#FFFFFF"
+        font-family="Arial, sans-serif" font-size="78" font-weight="800">BEYZATECH</text>
+  <text x="642" y="1620" text-anchor="middle" fill="#38BDF8"
+        font-family="Arial, sans-serif" font-size="42" font-weight="700">TERMINAL</text>
+</svg>

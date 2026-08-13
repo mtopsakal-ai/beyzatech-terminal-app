@@ -1,0 +1,10 @@
+{
+  "name": "beyzatech-demo-execution-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" }
+}

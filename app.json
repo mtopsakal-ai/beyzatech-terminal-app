@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Beyzatech Terminal",
+    "slug": "beyzatech-terminal",
+    "version": "2.4.1",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.beyzatech.terminal",
+      "versionCode": 30,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090D16"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1318f152-c0f6-4422-a231-82741e11af35"
+      }
+    }
+  }
+}
