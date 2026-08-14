@@ -1922,9 +1922,9 @@ function TerminalApp() {
       const health = await executionRequest("/health");
       setExecutionHealth({ connected: true, ...health });
       Alert.alert(`${health.isLive ? "Canlı" : "Demo"} işlem köprüsü`, `Bağlantı başarılı • Mod ${health.mode} • Manuel ${health.armed ? "ETKİN" : "KAPALI"} • Otomatik pilot ${health.auto?.running ? "ÇALIŞIYOR" : "KAPALI"}`);
-    } catch (healthError) {
+   } catch (healthError) {
       setExecutionHealth({ connected: false, armed: false, mode: "BİLİNMİYOR", isLive: false, demoOnly: true, maxLeverage: 3, auto: { running: false, envAllowed: false } });
-      Alert.alert("Bağlantı kurulamadı", healthError.message);
+      Alert.alert("Bağlantı Hatası Detayı", `Hata Mesajı: ${healthError.message}\n\nStack: ${healthError.stack || "Yok"}`);
     } finally { setExecutionLoading(false); }
   };
 
