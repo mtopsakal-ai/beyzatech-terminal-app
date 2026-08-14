@@ -13,7 +13,14 @@ let armed = false;
 const autoTrader = createAutoTrader();
 
 function send(response, status, payload) {
-  response.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
+  // CORS Başlıkları eklendi (Snack ve her yerden erişim için)
+  response.writeHead(status, { 
+    "Content-Type": "application/json; charset=utf-8", 
+    "Cache-Control": "no-store",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+  });
   response.end(JSON.stringify(payload));
 }
 
@@ -41,6 +48,12 @@ function cleanup() {
 }
 
 const server = http.createServer(async (request, response) => {
+  // Preflight (OPTIONS) isteklerini doğrudan kabul et
+  if (request.method === "OPTIONS") {
+    send(response, 200, {});
+    return;
+  }
+
   cleanup();
   if (request.method === "GET" && request.url === "/health") {
     const limits = readLimits();
@@ -117,57 +130,10 @@ const server = http.createServer(async (request, response) => {
     }
     return send(response, 404, { ok: false, error: "Uç nokta bulunamadı." });
   } catch (error) {
-    console.error("🔥 CAUGHT 500 ERROR:", error); // <-- Bu satırı ekledik 
+    console.error("🔥 CAUGHT 500 ERROR:", error);
     return send(response, 500, { ok: false, error: error?.message || "Sunucu hatası." });
   }
 });
 
+// Sunucuyu dinlemeye başla (CORS, send fonksiyonunda halledildi)
 server.listen(PORT, "0.0.0.0", () => console.log(`Beyzatech execution server :${PORT}`));
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Beyzatech execution server :${PORT}`);
-  
-  // Sunucu hazır olduğunda 2 saniye bekleyip otomatik devreye gir
-  setTimeout(() => {
-    console.log("[OTOMATİK] ARM (Silahlandırma) işlemi başlatılıyor...");
-    
-    const token = process.env.APP_CONTROL_TOKEN;
-    const baseUrl = `http://localhost:${PORT}`;
-
-    // 1. ARM İsteği
-    fetch(`${baseUrl}/v1/control/arm`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({})
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        console.log("[OTOMATİK] ARM başarılı! (armed: true)");
-        
-        // 2. START İsteği (ARM başarılı olursa 1 saniye sonra)
-        setTimeout(() => {
-          console.log("[OTOMATİK] START (Otomatik Pilot) başlatılıyor...");
-          fetch(`${baseUrl}/v1/auto/start`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
-          })
-          .then(res => res.json())
-          .then(startData => {
-            if (startData.ok) {
-              console.log("[OTOMATİK] START başarılı! Bot çalışıyor.");
-            } else {
-              console.error("[OTOMATİK] START hatası:", startData.error);
-            }
-          })
-          .catch(err => console.error("[OTOMATİK] START isteği başarısız:", err.message));
-        }, 1000);
-
-      } else {
-        console.error("[OTOMATİK] ARM hatası:", data.error);
-      }
-    })
-    .catch(err => console.error("[OTOMATİK] ARM isteği bağlantı hatası:", err.message));
-    
-  }, 2000); // Sunucu açıldıktan 2 saniye sonra tetikle
-});
