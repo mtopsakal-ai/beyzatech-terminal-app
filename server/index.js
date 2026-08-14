@@ -142,7 +142,5 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-// CORS korumasını tüm sunucuya uygula
-const corsServer = allowCors(server);
-// APK ve tüm dış bağlantılardan gelen isteklere izin ver
-corsServer.listen(PORT, "0.0.0.0", () => console.log(`Beyzatech execution server :${PORT}`));
+// Sunucuyu dinlemeye başla (CORS zaten send fonksiyonunda halledildi)
+server.listen(PORT, "0.0.0.0", () => console.log(`Beyzatech execution server :${PORT}`));
