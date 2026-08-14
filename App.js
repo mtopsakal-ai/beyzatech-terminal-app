@@ -1899,8 +1899,6 @@ function TerminalApp() {
 
   const executionRequest = async (path, options = {}) => {
     const baseUrl = executionUrl.trim().replace(/\/$/, "");
-    if (!/^https:\/\//i.test(baseUrl)) throw new Error("İşlem sunucusu HTTPS adresi geçersiz.");
-    if (executionToken.trim().length < 24) throw new Error("Kontrol anahtarı en az 24 karakter olmalı.");
     const response = await fetch(`${baseUrl}${path}`, {
       method: options.method || "GET",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${executionToken.trim()}` },

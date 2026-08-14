@@ -12,14 +12,27 @@ const usedSignals = new Map();
 let armed = false;
 const autoTrader = createAutoTrader();
 
+// === KESİN CORS ÇÖZÜMÜ ===
+const allowCors = fn => async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  );
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  return await fn(req, res);
+};
+
 function send(response, status, payload) {
-  // CORS Başlıkları eklendi (Snack ve her yerden erişim için)
   response.writeHead(status, { 
     "Content-Type": "application/json; charset=utf-8", 
     "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    "Access-Control-Allow-Origin": "*"
   });
   response.end(JSON.stringify(payload));
 }
@@ -48,12 +61,6 @@ function cleanup() {
 }
 
 const server = http.createServer(async (request, response) => {
-  // Preflight (OPTIONS) isteklerini doğrudan kabul et
-  if (request.method === "OPTIONS") {
-    send(response, 200, {});
-    return;
-  }
-
   cleanup();
   if (request.method === "GET" && request.url === "/health") {
     const limits = readLimits();
@@ -135,5 +142,7 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-// Sunucuyu dinlemeye başla (CORS, send fonksiyonunda halledildi)
-server.listen(PORT, "0.0.0.0", () => console.log(`Beyzatech execution server :${PORT}`));
+// CORS korumasını tüm sunucuya uygula
+const corsServer = allowCors(server);
+
+corsServer.listen(PORT, "0.0.0.0", () => console.log(`Beyzatech execution server :${PORT}`));

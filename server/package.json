@@ -6,5 +6,12 @@
     "start": "node index.js",
     "test": "node --test"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "expo": "~57.0.7",
+    "react": "19.2.3",
+    "react-native": "0.86.0"
+  }
 }
