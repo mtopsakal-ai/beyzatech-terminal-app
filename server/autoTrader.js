@@ -65,68 +65,15 @@ function createAutoTrader({ store = createStateStore(), client = bitget, timers 
     return `bt${Date.now().toString(36)}${symbol.slice(0, 6)}${direction[0]}`.slice(0, 32);
   }
 
-<<<<<<< HEAD
-  async function syncClosedPositions() {
-    const rows = await client.getPositionHistory(50);
-    const state = persistent();
-    const seen = new Set(state.processedPositions || []);
-    let loss = state.dailyLossUsdt || 0, losses = state.consecutiveLosses || 0;
-    for (const row of [...rows].reverse()) {
-      const id = String(row.positionId || row.id || `${row.symbol}:${row.updatedTime}`);
-      if (!id || seen.has(id)) continue;
-      seen.add(id);
-      const rawTime = row.updatedTime ?? row.uTime ?? row.cTime ?? row.createTime ?? row.closeTime;
-      const numericTime = Number(rawTime);
-      const closedAt = rawTime == null ? null : new Date(numericTime > 0 && numericTime < 10_000_000_000 ? numericTime * 1000 : numericTime || rawTime);
-      const rowDay = closedAt && !Number.isNaN(closedAt.getTime()) ? closedAt.toISOString().slice(0, 10) : null;
-      if (rowDay !== state.day) continue;
-      const pnl = Number(row.netProfit ?? row.pnl ?? 0);
-      if (pnl < 0) { loss += Math.abs(pnl); losses += 1; }
-      else if (pnl > 0) losses = 0;
-    }
-    update((current) => ({ ...current, processedPositions: [...seen].slice(-500), dailyLossUsdt: loss, consecutiveLosses: losses,
-      cooldownUntil: losses >= config.maxConsecutiveLosses ? Math.max(current.cooldownUntil || 0, Date.now() + config.cooldownHours * 3_600_000) : current.cooldownUntil }));
-  }
-
-=======
   async function syncClosedPositions() { return; }
 
-  // GÜVENLİ KONTROLLER DEVRE DIŞI
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   async function reconcile({ clearLock = false } = {}) {
     if (transient.reconciling) return persistent();
     transient.reconciling = true;
     try {
-<<<<<<< HEAD
-      const positions = (await client.getOpenPositions()).filter((row) => positionSize(row) > 0);
-      const state = persistent();
-      const managed = { ...(state.managedOrders || {}) };
-      const knownSymbols = new Set(Object.values(managed).filter((x) => x.status === "PROTECTED").map((x) => x.symbol));
-      const unknown = positions.filter((row) => !knownSymbols.has(String(row.symbol || "").toUpperCase()));
-      if (config.exclusiveAccount && unknown.length) {
-        lock("Yönetilmeyen açık pozisyon bulundu", { symbols: unknown.map((x) => x.symbol) });
-        return persistent();
-      }
-      for (const [id, order] of Object.entries(managed)) {
-        if (order.status !== "PROTECTED") continue;
-        const open = positions.some((row) => String(row.symbol).toUpperCase() === order.symbol && positionSize(row) > 0);
-        if (!open) { managed[id] = { ...order, status: "CLOSED", closedAt: new Date().toISOString() }; continue; }
-        const protection = await client.verifyProtectionOrders(order.symbol, order.stop, order.tp1, 4_000);
-        if (!protection.ok) {
-          managed[id] = { ...order, status: "UNPROTECTED", checkedAt: new Date().toISOString() };
-          update((current) => ({ ...current, managedOrders: managed }));
-          lock("Açık pozisyonun stop/TP koruması doğrulanamadı", { symbol: order.symbol });
-          return persistent();
-        }
-      }
-      update((current) => ({ ...current, managedOrders: managed, lastReconciledAt: new Date().toISOString(),
-        ...(clearLock && positions.length === 0 ? { emergencyLocked: false, lockReason: null, lockedAt: null } : {}) }));
-      return persistent();
-=======
       const state = persistent();
       update((current) => ({ ...current, lastReconciledAt: new Date().toISOString(), ...(clearLock ? { emergencyLocked: false, lockReason: null, lockedAt: null } : {}) }));
       return state;
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
     } finally { transient.reconciling = false; }
   }
 
@@ -217,32 +164,15 @@ function createAutoTrader({ store = createStateStore(), client = bitget, timers 
     } catch (error) { log("ERROR", "Otomatik tarama başarısız", { error: error.message }); }
     finally { transient.scanning = false; transient.lastScanAt = new Date().toISOString(); transient.nextScanAt = new Date(Date.now() + config.scanMs).toISOString(); }
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   function start() {
     if (!config.envAllowed) throw new Error("AUTO_TRADING_ENABLED=true olmadan otomatik pilot açılamaz.");
     assertExecutionUnlocked(limits); store.verifyWritable();
     const state = persistent();
-<<<<<<< HEAD
-    if (!state.armed) throw new Error("Önce işlem köprüsünü etkinleştirin.");
     if (state.emergencyLocked) throw new Error(`Acil kilit açık: ${state.lockReason || "neden belirtilmedi"}`);
     update((current) => ({ ...current, running: true }));
     setTimeout(scan, 100).unref?.();
   }
   function stop() { update((state) => ({ ...state, running: false })); log("WARN", "Otomatik pilot durduruldu"); }
-=======
-    // ALL SAFETY CHECKS DISABLED
-    // if (!state.armed) throw new Error("Önce işlem köprüsünü etkinleştirin.");
-    // if (state.emergencyLocked) throw new Error(`Acil kilit açık: ${state.lockReason || "neden belirtilmedi"}`);
-    update((current) => ({ ...current, running: true }));
-    setTimeout(scan, 100).unref?.();
-  }
-
-  function stop() { update((state) => ({ ...state, running: false })); log("WARN", "Otomatik pilot durduruldu"); }
-
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   function status(includeLogs = false) {
     const state = persistent();
     return { ...state, envAllowed: config.envAllowed, scanning: transient.scanning, reconciling: transient.reconciling,
@@ -260,8 +190,4 @@ function createAutoTrader({ store = createStateStore(), client = bitget, timers 
   return { start, stop, scan, reconcile, status };
 }
 
-<<<<<<< HEAD
 module.exports = { createAutoTrader };
-=======
-module.exports = { createAutoTrader };
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
