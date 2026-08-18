@@ -55,30 +55,6 @@ function trendOf(candles) {
   return fast > slow ? "LONG" : fast < slow ? "SHORT" : "NEUTRAL";
 }
 
-<<<<<<< HEAD
-const FRAME_WEIGHTS = { "15m": 15, "1H": 25, "4H": 30, "1D": 30 };
-
-function classifyTimeframes(directions, primaryDirection) {
-  const available = Object.entries(FRAME_WEIGHTS).filter(([key]) => directions[key] && directions[key] !== "NEUTRAL");
-  const totalWeight = available.reduce((sum, [, weight]) => sum + weight, 0);
-  const alignedWeight = available.reduce((sum, [key, weight]) => sum + (directions[key] === primaryDirection ? weight : 0), 0);
-  const oppositeWeight = available.reduce((sum, [key, weight]) => sum + (directions[key] !== primaryDirection ? weight : 0), 0);
-  const alignment = totalWeight ? Math.round(alignedWeight / totalWeight * 100) : 0;
-  const higherAligned = ["4H", "1D"].filter((key) => directions[key] === primaryDirection).length;
-  const higherOpposite = ["4H", "1D"].filter((key) => directions[key] !== "NEUTRAL" && directions[key] !== primaryDirection).length;
-  let regime = "TRANSITION";
-  if (!primaryDirection || primaryDirection === "NEUTRAL") regime = "NO_DIRECTION";
-  else if (higherOpposite === 2) regime = "HARD_CONFLICT";
-  else if (directions["15m"] !== primaryDirection && higherAligned >= 1) regime = "PULLBACK";
-  else if (higherOpposite === 1 && alignment < 55) regime = "COUNTER_TREND";
-  else if (alignment >= 85) regime = "STRONG_ALIGNMENT";
-  else if (alignment >= 65) regime = "ALIGNED";
-  return {
-    alignment, alignedWeight, oppositeWeight, regime,
-    hardConflict: ["HARD_CONFLICT", "NO_DIRECTION"].includes(regime),
-    riskMultiplier: regime === "STRONG_ALIGNMENT" ? 1 : regime === "ALIGNED" ? 0.85 : regime === "PULLBACK" ? 0.65 : 0,
-  };
-=======
 const TIMEFRAME_WEIGHTS = { "15m": 15, "1H": 25, "4H": 30, "1D": 30 };
 
 function evaluateTimeframes(directions, expectedDirection) {
@@ -114,7 +90,6 @@ function evaluateTimeframes(directions, expectedDirection) {
     regime = "ALIGNED"; state = "UYUMLU"; riskMultiplier = 0.9;
   }
   return { score, alignedWeight, opposedWeight, availableWeight, hardConflict, regime, state, riskMultiplier };
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
 }
 
 function analyzeMarket(frames, options = {}) {
@@ -127,11 +102,7 @@ function analyzeMarket(frames, options = {}) {
   }
   const directions = { "15m": trendOf(frames["15m"]), "1H": trendOf(primary), "4H": trendOf(frames["4H"]), "1D": trendOf(frames["1D"]) };
   const direction = directions["1H"];
-<<<<<<< HEAD
-  const timeframe = classifyTimeframes(directions, direction);
-=======
   const timeframe = evaluateTimeframes(directions, direction);
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   const closes = primary.map((item) => item.close);
   const current = closes.at(-1);
   const currentRsi = rsi(closes);
@@ -144,36 +115,18 @@ function analyzeMarket(frames, options = {}) {
   const volumeConfirmed = primary.at(-1).volume >= volumeAverage * 0.9;
   const breakout = direction === "LONG" ? current >= recentHigh * 0.995 : current <= recentLow * 1.005;
   const rsiSafe = direction === "LONG" ? currentRsi >= 48 && currentRsi <= 72 : currentRsi >= 28 && currentRsi <= 52;
-<<<<<<< HEAD
-  const directionScore = Math.round(Math.min(100, 35 + timeframe.alignment * 0.65));
-  const entryScore = Math.round(Math.min(100, 35 + timeframe.alignment * 0.35 + (rsiSafe ? 12 : 0) + (volumeConfirmed ? 10 : 0) + (breakout ? 8 : 0)));
-  const volatilityLocked = !(atrPercent > 0) || atrPercent > maxAtrPercent;
-  const timeframeConflict = timeframe.hardConflict;
-  const ready = directionScore >= minDirectionScore && entryScore >= minEntryScore && !volatilityLocked && !timeframeConflict && rsiSafe;
-=======
   const directionScore = Math.round(Math.min(100, 45 + timeframe.score * 0.55));
   const entryScore = Math.round(Math.min(100, 40 + timeframe.score * 0.32 + (rsiSafe ? 12 : 0) + (volumeConfirmed ? 8 : 0) + (breakout ? 8 : 0)));
   const volatilityLocked = !(atrPercent > 0) || atrPercent > maxAtrPercent;
   const timeframeConflict = timeframe.hardConflict;
   const counterTrendConfirmed = timeframe.regime !== "COUNTER_TREND" || (entryScore >= minEntryScore + 8 && volumeConfirmed && breakout);
   const ready = directionScore >= minDirectionScore && entryScore >= minEntryScore && !volatilityLocked && !timeframeConflict && rsiSafe && counterTrendConfirmed;
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   const stopDistance = currentAtr * 1.5;
   const stop = direction === "LONG" ? current - stopDistance : current + stopDistance;
   const tp1 = direction === "LONG" ? current + stopDistance * 2 : current - stopDistance * 2;
   const tp2 = direction === "LONG" ? current + stopDistance * 3 : current - stopDistance * 3;
   return {
     ready, direction, directionScore, entryScore, timeframeConflict, volatilityLocked,
-<<<<<<< HEAD
-    timeframeAlignment: timeframe.alignment, timeframeRegime: timeframe.regime, riskMultiplier: timeframe.riskMultiplier,
-    rsi: currentRsi, atrPercent, volumeConfirmed, breakout, price: current, stop, tp1, tp2,
-    candleTime: primary.at(-1).time, directions,
-    reason: ready ? "Koşullar hazır" : volatilityLocked ? "Volatilite kilidi" : timeframeConflict ? "Gerçek üst zaman çatışması" : timeframe.regime === "PULLBACK" ? "Normal geri çekilme teyidi bekleniyor" : !rsiSafe ? "RSI teyidi yok" : "Skor eşiği bekleniyor",
-  };
-}
-
-module.exports = { ema, rsi, atr, parseCandles, trendOf, classifyTimeframes, analyzeMarket };
-=======
     timeframeScore: timeframe.score, timeframeState: timeframe.state,
     timeframeRegime: timeframe.regime, timeframeRiskMultiplier: timeframe.riskMultiplier,
     rsi: currentRsi, atrPercent, volumeConfirmed, breakout, price: current, stop, tp1, tp2,
@@ -183,4 +136,3 @@ module.exports = { ema, rsi, atr, parseCandles, trendOf, classifyTimeframes, ana
 }
 
 module.exports = { ema, rsi, atr, parseCandles, trendOf, evaluateTimeframes, analyzeMarket };
->>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
