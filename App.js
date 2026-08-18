@@ -20,9 +20,12 @@ import MiniChart from "./components/MiniChart";
 import StrengthGauge from "./components/StrengthGauge";
 import DataHealthCard from "./components/DataHealthCard";
 import TimeframeMatrix from "./components/TimeframeMatrix";
+<<<<<<< HEAD
 import SmartMoneyAnalysis from "./components/SmartMoneyAnalysis";
 import ExpertAnalystReport from "./components/ExpertAnalystReport";
 import MarketDataPanel from "./components/MarketDataPanel";
+=======
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
 import TradeSummary from "./components/TradeSummary";
 import { createMarketSocket } from "./api/websocketManager";
 import {
@@ -462,6 +465,7 @@ function TerminalApp() {
   const [executionUrl, setExecutionUrl] = useState("");
   const [executionToken, setExecutionToken] = useState("");
   const [demoOrderUsdt, setDemoOrderUsdt] = useState("5");
+<<<<<<< HEAD
   const [executionLeverage, setExecutionLeverage] = useState("1");
   const [executionHealth, setExecutionHealth] = useState({
     connected: false,
@@ -485,6 +489,9 @@ function TerminalApp() {
       lastDecision: {}
     }
   });
+=======
+  const [executionHealth, setExecutionHealth] = useState({ connected: false, armed: false, mode: "BITGET_DEMO", isLive: false, demoOnly: true, maxLeverage: 3, auto: { running: false, envAllowed: false } });
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   const [executionLoading, setExecutionLoading] = useState(false);
   const [lastDemoOrder, setLastDemoOrder] = useState(null);
   const [activeTab, setActiveTab] = useState("terminal");
@@ -501,6 +508,7 @@ function TerminalApp() {
   activeMarketRef.current = `${exchange}:${marketType}:${coin}`;
   const calibrationProfile = useMemo(() => buildCalibrationProfile(history), [history]);
 
+<<<<<<< HEAD
   const executionRequest = async (path, options = {}) => {
     const baseUrl = executionUrl.trim().replace(/\/$/, "");
     if (!/^https:\/\//i.test(baseUrl)) throw new Error("İşlem sunucusu HTTPS adresi geçersiz.");
@@ -515,6 +523,8 @@ function TerminalApp() {
     return json;
   };
 
+=======
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   useEffect(() => {
     async function restoreSavedData() {
       try {
@@ -549,6 +559,7 @@ function TerminalApp() {
           const execution = JSON.parse(savedExecution);
           setExecutionUrl(String(execution.url || ""));
           setDemoOrderUsdt(String(execution.orderUsdt || "5"));
+<<<<<<< HEAD
           setExecutionLeverage(String(execution.leverage || "1"));
           
           // --- YENİ EKLEME: Ayarlar yüklendikten sonra sunucu durumunu sorgula ---
@@ -561,6 +572,8 @@ function TerminalApp() {
             }
           }
           // ------------------------------------------------------------------
+=======
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
         }
       } catch (storageError) {
         console.log("Kayıtlar yüklenemedi:", storageError);
@@ -1046,12 +1059,17 @@ function TerminalApp() {
     setTimeframeRows(frames.map((frame, index) => {
       const result = settled[index];
       if (result.status !== "fulfilled" || !Array.isArray(result.value)) {
+<<<<<<< HEAD
         return { timeframe: frame, label: labels[frame], trend: "NÖTR", available: false, indicators: null };
+=======
+        return { timeframe: frame, label: labels[frame], trend: "NÖTR", available: false };
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
       }
       const normalized = result.value.map((item) => ({
         time: Number(item[0]), open: Number(item[1]), high: Number(item[2]),
         low: Number(item[3]), close: Number(item[4]), volume: Number(item[5]),
       })).filter((item) => Number.isFinite(item.close)).sort((a, b) => a.time - b.time);
+<<<<<<< HEAD
       const frameIndicators = normalized.length >= 30
         ? calculateIndicators(normalized.slice(0, -1))
         : null;
@@ -1059,6 +1077,11 @@ function TerminalApp() {
         timeframe: frame, label: labels[frame], available: normalized.length >= 30,
         trend: frameIndicators?.candleTrend || "NÖTR",
         indicators: frameIndicators,
+=======
+      return {
+        timeframe: frame, label: labels[frame], available: normalized.length >= 30,
+        trend: normalized.length >= 30 ? calculateIndicators(normalized.slice(0, -1)).candleTrend : "NÖTR",
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
       };
     }));
   }, [coin, exchange, marketType]);
@@ -1951,6 +1974,7 @@ function TerminalApp() {
   const executionIsLive = executionHealth.isLive === true || executionHealth.mode === "BITGET_LIVE";
   const executionModeText = executionIsLive ? "CANLI" : "DEMO";
   const executionMaxLeverage = Math.max(1, Number(executionHealth.maxLeverage) || (executionIsLive ? 2 : 3));
+<<<<<<< HEAD
   const selectedExecutionLeverage = Math.min(
     executionMaxLeverage,
     Math.max(1, Number.parseInt(executionLeverage, 10) || 1)
@@ -1976,14 +2000,44 @@ function TerminalApp() {
       setExecutionHealth({ connected: false, armed: false, mode: "BİLİNMİYOR", isLive: false, demoOnly: true, maxLeverage: 3, auto: { running: false, envAllowed: false } });
       Alert.alert("Bağlantı kurulamadı", healthError.message);
     } finally { setExecutionLoading(false); }
+=======
+
+  const executionRequest = async (path, options = {}) => {
+    const baseUrl = executionUrl.trim().replace(/\/$/, "");
+    const response = await fetch(`${baseUrl}${path}`, {
+      method: options.method || "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${executionToken.trim()}` },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok || json.ok === false) throw new Error(json.error || json.errors?.join("\n") || "İşlem sunucusu isteği başarısız.");
+    return json;
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   };
 
   const saveExecutionSettings = async () => {
     await AsyncStorage.setItem("beyzatech_execution_settings", JSON.stringify({
       url: executionUrl.trim(), orderUsdt: demoOrderUsdt,
+<<<<<<< HEAD
       leverage: String(selectedExecutionLeverage),
     }));
     Alert.alert("Kaydedildi", "Sunucu adresi, emir tutarı ve kaldıraç kaydedildi. Kontrol anahtarı güvenlik için kaydedilmez ve her açılışta yeniden girilir.");
+=======
+    }));
+    Alert.alert("Kaydedildi", "Sunucu adresi ve emir tutarı kaydedildi. Kontrol anahtarı güvenlik için kaydedilmez ve her açılışta yeniden girilir.");
+  };
+
+  const checkExecutionHealth = async () => {
+    setExecutionLoading(true);
+    try {
+      const health = await executionRequest("/health");
+      setExecutionHealth({ connected: true, ...health });
+      Alert.alert(`${health.isLive ? "Canlı" : "Demo"} işlem köprüsü`, `Bağlantı başarılı • Mod ${health.mode} • Manuel ${health.armed ? "ETKİN" : "KAPALI"} • Otomatik pilot ${health.auto?.running ? "ÇALIŞIYOR" : "KAPALI"}`);
+   } catch (healthError) {
+      setExecutionHealth({ connected: false, armed: false, mode: "BİLİNMİYOR", isLive: false, demoOnly: true, maxLeverage: 3, auto: { running: false, envAllowed: false } });
+      Alert.alert("Bağlantı Hatası Detayı", `Hata Mesajı: ${healthError.message}\n\nStack: ${healthError.stack || "Yok"}`);
+    } finally { setExecutionLoading(false); }
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
   };
 
   const performArmExecution = async () => {
@@ -2023,7 +2077,11 @@ function TerminalApp() {
       Alert.alert(
         "Sunucu otomatik pilotu",
         action === "start"
+<<<<<<< HEAD
           ? `${executionModeText} otomatik pilot bağlı işlem sunucusunda çalışıyor. Telefon kapalı olsa da güvenlik koşulları oluştuğunda tarama devam eder.`
+=======
+          ? `${executionModeText} otomatik pilot Railway sunucusunda çalışıyor. Telefon kapalı olsa da güvenlik koşulları oluştuğunda tarama devam eder.`
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
           : "Otomatik pilot durduruldu; yeni otomatik emir gönderilmeyecek."
       );
     } catch (autoError) { Alert.alert("Otomatik pilot", autoError.message); }
@@ -2058,7 +2116,11 @@ function TerminalApp() {
       const signalId = `${coin}-${timeframe}-${signal}-${candles[candles.length - 1]?.time || Date.now()}`;
       const result = await executionRequest("/v1/orders/preview", { method: "POST", body: {
         symbol: `${coin}USDT`, direction: signal, orderUsdt: Number(demoOrderUsdt),
+<<<<<<< HEAD
         leverage: selectedExecutionLeverage,
+=======
+        leverage: Math.min(executionMaxLeverage, Math.max(1, Number.parseInt(leverage, 10) || 1)),
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
         stop: Number(stop), tp1: Number(tp1), tp2: Number(tp2), lifecycle: entryPlan.status,
         hardBlock: dynamicRisk.hardBlock, timeframeConflict: timeframeMatrix.hardConflict,
         dataHealthScore: dataHealth.score, signalId,
@@ -2278,7 +2340,11 @@ function TerminalApp() {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
+<<<<<<< HEAD
       <Text style={styles.title}>⚡ Beyzatech Terminal <Text style={styles.version}>v24.2</Text></Text>
+=======
+      <Text style={styles.title}>⚡ Beyzatech Terminal <Text style={styles.version}>v24.1</Text></Text>
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
       <Text style={styles.sub}>Gerçek Zamanlı Kripto Karar Destek Terminali</Text>
 
       {["terminal", "graph"].includes(activeTab) && (
@@ -2803,4 +2869,1565 @@ function TerminalApp() {
                   <View style={styles.tradeRow} key={item.id}>
                     <View style={[styles.tradeSide, item.side === "BUY" ? styles.buySide : styles.sellSide]}>
                       <Text style={styles.tradeSideText}>{item.side === "BUY" ? "ALIM" : "SATIM"}</Text>
+<<<<<<< HEAD
                     </View
+=======
+                    </View>
+                    <View style={styles.marketNameWrap}>
+                      <Text style={styles.historyCoin}>{flowCoin}/USDT</Text>
+                      <Text style={styles.historyMeta}>{new Date(item.time).toLocaleTimeString("tr-TR")} • ${item.price.toFixed(4)}</Text>
+                    </View>
+                    <Text style={item.side === "BUY" ? styles.longFlowValue : styles.shortFlowValue}>
+                      {formatCompact(item.value)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          ) : marketPanel === "LIQUIDATION" ? (
+            <>
+              <View style={styles.liquidationPeriodRow}>
+                {LIQUIDATION_PERIODS.map(([period]) => (
+                  <TouchableOpacity
+                    key={period}
+                    style={[
+                      styles.liquidationPeriodButton,
+                      liquidationPeriod === period && styles.liquidationPeriodActive,
+                    ]}
+                    onPress={() => setLiquidationPeriod(period)}
+                  >
+                    <Text
+                      style={[
+                        styles.liquidationPeriodText,
+                        liquidationPeriod === period && styles.liquidationPeriodTextActive,
+                      ]}
+                    >
+                      {period}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {liquidationError ? (
+                <Text style={styles.errorBox}>{liquidationError}</Text>
+              ) : null}
+
+              <View style={styles.liquidationTotalCard}>
+                <Text style={styles.flowCardLabel}>{liquidationPeriod.toUpperCase()} TOPLAM LİKİDASYON</Text>
+                <Text style={styles.liquidationTotalValue}>
+                  {formatCompact(liquidationSummary.total)}
+                </Text>
+                <Text style={styles.flowDisclaimer}>
+                  Bitget’in herkese açık son 100 kaydından hesaplanan yaklaşık parasal büyüklük.
+                </Text>
+              </View>
+
+              <View style={styles.flowRatioRow}>
+                <View style={[styles.flowRatioCard, styles.shortFlowCard]}>
+                  <Text style={styles.flowCardLabel}>LONG LİKİDASYON</Text>
+                  <Text style={styles.shortFlowValue}>
+                    {formatCompact(liquidationSummary.longTotal)}
+                  </Text>
+                </View>
+                <View style={[styles.flowRatioCard, styles.longFlowCard]}>
+                  <Text style={styles.flowCardLabel}>SHORT LİKİDASYON</Text>
+                  <Text style={styles.longFlowValue}>
+                    {formatCompact(liquidationSummary.shortTotal)}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>🔥 EN ÇOK LİKİDE OLAN COINLER</Text>
+                {!liquidationSummary.coins.length && (
+                  <Text style={styles.muted}>
+                    {liquidationLoading ? "Likidasyon verisi yükleniyor…" : "Bu aralıkta kayıt yok."}
+                  </Text>
+                )}
+                {liquidationSummary.coins.map((item) => {
+                  const longDominant = item.long >= item.short;
+                  return (
+                    <View style={styles.flowDataRow} key={item.coin}>
+                      <View>
+                        <Text style={styles.historyCoin}>{item.coin}/USDT</Text>
+                        <Text style={styles.historyMeta}>
+                          Long {formatCompact(item.long)} • Short {formatCompact(item.short)}
+                        </Text>
+                      </View>
+                      <Text style={longDominant ? styles.shortFlowValue : styles.longFlowValue}>
+                        {formatCompact(item.total)}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>⚡ SON LİKİDASYONLAR</Text>
+                <Text style={styles.flowDisclaimer}>
+                  Long tasfiyeleri kırmızı, short tasfiyeleri yeşil gösterilir. Uygulama açıkken
+                  yaklaşık $100K üzerindeki yeni kayıtlar için uyarı verilir.
+                </Text>
+                {!liquidationSummary.rows.length && (
+                  <Text style={styles.muted}>Bu zaman aralığında likidasyon kaydı yok.</Text>
+                )}
+                {liquidationSummary.rows.slice(0, 15).map((item) => {
+                  const isLongLiquidation = item.side === "buy";
+                  return (
+                    <View style={styles.tradeRow} key={item.id}>
+                      <View
+                        style={[
+                          styles.tradeSide,
+                          isLongLiquidation ? styles.sellSide : styles.buySide,
+                        ]}
+                      >
+                        <Text style={styles.tradeSideText}>
+                          {isLongLiquidation ? "LONG" : "SHORT"}
+                        </Text>
+                      </View>
+                      <View style={styles.marketNameWrap}>
+                        <Text style={styles.historyCoin}>{item.coin}/USDT</Text>
+                        <Text style={styles.historyMeta}>
+                          {new Date(item.time).toLocaleTimeString("tr-TR")} • ${item.price.toFixed(4)}
+                        </Text>
+                      </View>
+                      <Text style={isLongLiquidation ? styles.shortFlowValue : styles.longFlowValue}>
+                        {formatCompact(item.value)}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </>
+          ) : (
+            <>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.flowCoinRow}>
+                  {["TÜMÜ", ...WHALE_COINS].map((item) => (
+                    <TouchableOpacity
+                      key={item}
+                      style={[styles.flowCoinButton, whaleCoin === item && styles.flowCoinActive]}
+                      onPress={() => setWhaleCoin(item)}
+                    >
+                      <Text style={[styles.flowCoinText, whaleCoin === item && styles.flowCoinTextActive]}>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+
+              <View style={styles.whaleThresholdRow}>
+                {WHALE_THRESHOLDS.map((item) => (
+                  <TouchableOpacity
+                    key={item}
+                    style={[
+                      styles.whaleThresholdButton,
+                      whaleThreshold === item && styles.whaleThresholdActive,
+                    ]}
+                    onPress={() => setWhaleThreshold(item)}
+                  >
+                    <Text
+                      style={[
+                        styles.whaleThresholdText,
+                        whaleThreshold === item && styles.whaleThresholdTextActive,
+                      ]}
+                    >
+                      {formatCompact(item)}+
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {whaleError ? <Text style={styles.errorBox}>{whaleError}</Text> : null}
+
+              <View style={styles.flowRatioRow}>
+                <View style={[styles.flowRatioCard, styles.longFlowCard]}>
+                  <Text style={styles.flowCardLabel}>BÜYÜK ALIM HACMİ</Text>
+                  <Text style={styles.longFlowValue}>{formatCompact(whaleSummary.buyTotal)}</Text>
+                </View>
+                <View style={[styles.flowRatioCard, styles.shortFlowCard]}>
+                  <Text style={styles.flowCardLabel}>BÜYÜK SATIM HACMİ</Text>
+                  <Text style={styles.shortFlowValue}>{formatCompact(whaleSummary.sellTotal)}</Text>
+                </View>
+              </View>
+
+              <View style={styles.whaleNetCard}>
+                <Text style={styles.flowCardLabel}>NET BÜYÜK İŞLEM AKIŞI</Text>
+                <Text style={whaleSummary.net >= 0 ? styles.longFlowValue : styles.shortFlowValue}>
+                  {whaleSummary.net >= 0 ? "+" : "-"}{formatCompact(Math.abs(whaleSummary.net))}
+                </Text>
+                <Text style={styles.flowDisclaimer}>
+                  {whaleSummary.net > 0
+                    ? "Büyük işlemlerde alım tarafı baskın."
+                    : whaleSummary.net < 0
+                    ? "Büyük işlemlerde satım tarafı baskın."
+                    : "Büyük işlem yönleri dengeli veya veri bekleniyor."}
+                </Text>
+              </View>
+
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>🐋 GERÇEK BÜYÜK FUTURES İŞLEMLERİ</Text>
+                <Text style={styles.flowDisclaimer}>
+                  Bitget herkese açık işlemlerinden hesaplanır. ALIM/SATIM işlem yönüdür;
+                  hesap adresi ve pozisyonun açılış/kapanış durumu borsa tarafından paylaşılmaz.
+                </Text>
+                {!whaleSummary.rows.length && (
+                  <Text style={styles.muted}>
+                    {whaleLoading
+                      ? "Balina işlem akışı yükleniyor…"
+                      : "Seçilen eşik üzerinde yeni işlem bulunamadı."}
+                  </Text>
+                )}
+                {whaleSummary.rows.slice(0, 30).map((item) => (
+                  <View style={styles.tradeRow} key={item.id}>
+                    <View style={[styles.tradeSide, item.side === "BUY" ? styles.buySide : styles.sellSide]}>
+                      <Text style={styles.tradeSideText}>{item.side === "BUY" ? "ALIM" : "SATIM"}</Text>
+                    </View>
+                    <View style={styles.marketNameWrap}>
+                      <Text style={styles.historyCoin}>{item.coin}/USDT</Text>
+                      <Text style={styles.historyMeta}>
+                        {new Date(item.time).toLocaleTimeString("tr-TR")} • ${item.price.toFixed(4)}
+                        {item.isRPI ? " • RPI" : ""}
+                      </Text>
+                    </View>
+                    <Text style={item.side === "BUY" ? styles.longFlowValue : styles.shortFlowValue}>
+                      {formatCompact(item.value)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              <Text style={styles.flowUpdateText}>
+                Son başarılı balina akışı güncellemesi: {whaleUpdatedAt}
+              </Text>
+              <Text style={styles.flowDisclaimer}>
+                Uygulama açıkken seçili eşik üzerindeki yeni büyük işlemler için uyarı verilir.
+              </Text>
+            </>
+          )}
+        </>
+      )}
+
+      {activeTab === "scan" && <View style={styles.card}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>⭐ FAVORİ COIN TARAMA</Text>
+          <TouchableOpacity style={styles.multiScanButton} onPress={scanAllFavorites} disabled={multiScanning}>
+            <Text style={styles.multiScanText}>{multiScanning ? "TARANIYOR…" : "TÜMÜNÜ TARA"}</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.favoriteRow}>
+            {favorites.map((favorite) => (
+              <View style={styles.favoriteChip} key={favorite}>
+                <TouchableOpacity onPress={() => { setCoinInput(favorite); setCoin(favorite); }}>
+                  <Text style={styles.favoriteText}>{favorite}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => removeFavorite(favorite)}>
+                  <Text style={styles.removeFavorite}>×</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+        {scanResults.map((result) => (
+          <TouchableOpacity
+            key={result.coin}
+            style={styles.scanResult}
+            onPress={() => { setCoinInput(result.coin); setCoin(result.coin); }}
+          >
+            <Text style={styles.resultCoin}>{result.coin}  ${result.price}</Text>
+            <Text style={{ color: result.direction === "LONG" ? "#10B981" : "#F87171", fontWeight: "800" }}>
+              {result.direction}  %{result.score}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>}
+
+      {activeTab === "graph" && (
+        <>
+          <MiniChart
+            candles={chartCandles}
+            coin={coin}
+            direction={signal}
+            timeframe={TIMEFRAME_LABELS[timeframe] || timeframe}
+            entry={Number(entry)}
+            stop={Number(stop)}
+            tp1={Number(tp1)}
+            tp2={Number(tp2)}
+            support={Number(entryPlan.support)}
+            resistance={Number(entryPlan.resistance)}
+          />
+
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>📐 TEKNİK GÖSTERGELER</Text>
+            <Metric label="RSI (14)" value={indicators.rsi.toFixed(1)} positive={indicators.rsi >= 50 && indicators.rsi <= 70} />
+            <Metric label="EMA 9" value={indicators.ema9.toFixed(4)} positive={indicators.ema9 >= indicators.ema21} />
+            <Metric label="EMA 21" value={indicators.ema21.toFixed(4)} positive={indicators.ema9 >= indicators.ema21} />
+            <Metric label="SMA 200" value={indicators.sma200.toFixed(4)} positive={Number(price) >= indicators.sma200} />
+            <Metric label="MACD" value={indicators.macd.toFixed(4)} positive={indicators.macd >= indicators.macdSignal} />
+            <Metric label="MACD Sinyal" value={indicators.macdSignal.toFixed(4)} positive={indicators.macd >= indicators.macdSignal} />
+            <Metric label="MACD Histogram" value={indicators.macdHistogram.toFixed(4)} positive={indicators.macdHistogram >= 0} />
+            <Metric label="Hacim değişimi" value={formattedVolume} positive={indicators.volumeChange >= 0} />
+            <Metric label="Mum trendi" value={indicators.candleTrend} positive={indicators.candleTrend === "YUKARI"} />
+          </View>
+          {marketType === "FUTURES" && (
+            <View style={styles.card}>
+              <Text style={styles.sectionTitle}>♾️ FUTURES VERİLERİ</Text>
+              <Metric label="Mark Price" value={futuresData.available.markPrice ? `$${futuresData.markPrice.toFixed(4)}` : "—"} positive />
+              <Metric label="Funding Rate" value={futuresData.available.funding ? formattedFunding : "—"} positive={futuresData.fundingRate <= 0} />
+              <Metric label="Open Interest" value={futuresData.available.openInterest ? formattedOpenInterest : "—"} positive />
+              <Metric label="OI değişimi" value={futuresData.available.openInterestChange ? `${futuresData.openInterestChange >= 0 ? "+" : ""}%${futuresData.openInterestChange.toFixed(3)}` : "İkinci ölçüm bekleniyor"} positive={futuresData.openInterestChange >= 0} />
+              <Metric label="Aktif alım hacmi" value={futuresData.available.takerFlow ? `%${futuresData.takerBuyPercent.toFixed(1)}` : "—"} positive={futuresData.takerBuyPercent >= 50} />
+              <Metric label="BTC üst zaman trendi" value={futuresData.btcTrend || "NÖTR"} positive={futuresData.btcTrend === "YUKARI"} />
+              <Metric label="Long hesaplar" value={futuresData.available.accountRatio ? `%${futuresData.longPercent.toFixed(1)}` : "—"} positive={futuresData.longPercent >= 50} />
+              <Metric label="Short hesaplar" value={futuresData.available.accountRatio ? `%${futuresData.shortPercent.toFixed(1)}` : "—"} positive={futuresData.shortPercent >= 50} />
+            </View>
+          )}
+        </>
+      )}
+
+      {activeTab === "alarms" && (
+        <>
+          <View style={styles.screenHeader}>
+            <View>
+              <Text style={styles.screenTitle}>🔔 ALARM MERKEZİ</Text>
+              <Text style={styles.screenSub}>Yalnızca uygulama açıkken kontrol edilir</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.addAlarmButton}
+              onPress={() => {
+                setActiveTab("terminal");
+                Alert.alert("Alarm oluşturma", "Coini taradıktan sonra “ALARM KUR” düğmesine basın.");
+              }}
+            >
+              <Text style={styles.addAlarmText}>＋</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>AKTİF ALARM {alarm ? "• 1" : "• 0"}</Text>
+            {!alarm && <Text style={styles.muted}>Aktif alarm bulunmuyor.</Text>}
+            {!!alarm && (
+              <View style={styles.alarmCard}>
+                <View style={styles.alarmTopRow}>
+                  <View>
+                    <Text style={styles.alarmCoin}>{alarm.coin}/USDT</Text>
+                    <Text style={styles.historyMeta}>{alarm.exchange} {alarm.marketType} • {TIMEFRAME_LABELS[alarm.timeframe] || alarm.timeframe}</Text>
+                  </View>
+                  <Text style={[styles.alarmState, { color: alarm.active ? "#10B981" : "#FBBF24" }]}>
+                    {alarm.active ? "● AKTİF" : "Ⅱ DURAKLATILDI"}
+                  </Text>
+                </View>
+                <Text style={styles.text}>
+                  {alarm.direction} giriş seviyesi: <Text style={styles.blue}>${Number(alarm.target).toFixed(4)}</Text>
+                </Text>
+                <Text style={styles.historyMeta}>{alarm.createdAt}</Text>
+                <View style={styles.alarmActions}>
+                  <TouchableOpacity
+                    style={styles.alarmAction}
+                    onPress={() => setAlarm((previous) => ({ ...previous, active: !previous.active }))}
+                  >
+                    <Text style={styles.alarmActionText}>{alarm.active ? "Ⅱ DURAKLAT" : "▶ DEVAM ET"}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.alarmAction, styles.deleteAlarm]} onPress={() => setAlarm(null)}>
+                    <Text style={styles.deleteAlarmText}>SİL</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.card}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>GERÇEKLEŞMİŞ ALARMLAR • {completedAlarms.length}</Text>
+              {!!completedAlarms.length && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setCompletedAlarms([]);
+                    AsyncStorage.removeItem("beyzatech_completed_alarms");
+                  }}
+                >
+                  <Text style={styles.clearText}>TEMİZLE</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            {!completedAlarms.length && <Text style={styles.muted}>Henüz gerçekleşmiş alarm yok.</Text>}
+            {completedAlarms.map((item) => (
+              <View style={styles.completedAlarmRow} key={item.id}>
+                <View>
+                  <Text style={styles.historyCoin}>{item.coin}/USDT • {item.direction}</Text>
+                  <Text style={styles.historyMeta}>{item.completedAt}</Text>
+                </View>
+                <View style={styles.marketPriceWrap}>
+                  <Text style={styles.green}>ULAŞTI</Text>
+                  <Text style={styles.historyMeta}>${Number(item.reachedPrice).toFixed(4)}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </>
+      )}
+
+      {activeTab === "settings" && (
+        <>
+          <View style={styles.screenHeader}>
+            <View>
+              <Text style={styles.screenTitle}>⚙️ AYARLAR</Text>
+              <Text style={styles.screenSub}>Varsayılan terminal tercihleri</Text>
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Varsayılan borsa</Text>
+            <View style={styles.row}>
+              {["BINANCE", "BITGET"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  style={[styles.option, defaultExchange === item && styles.activeOption]}
+                  onPress={() => saveSettings(item, defaultMarketType, defaultTimeframe)}
+                >
+                  <Text style={[styles.optionText, defaultExchange === item && styles.activeOptionText]}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Varsayılan piyasa</Text>
+            <View style={styles.row}>
+              {["SPOT", "FUTURES"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  style={[styles.option, defaultMarketType === item && styles.activeOption]}
+                  onPress={() => saveSettings(defaultExchange, item, defaultTimeframe)}
+                >
+                  <Text style={[styles.optionText, defaultMarketType === item && styles.activeOptionText]}>
+                    {item === "SPOT" ? "SPOT" : "FUTURES • USDT-M"}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Varsayılan zaman aralığı</Text>
+            <View style={styles.timeRow}>
+              {TIMEFRAMES.map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  style={[styles.timeButton, defaultTimeframe === item && styles.activeTime]}
+                  onPress={() => saveSettings(defaultExchange, defaultMarketType, item)}
+                >
+                  <Text style={[styles.timeText, defaultTimeframe === item && styles.activeTimeText]}>{TIMEFRAME_LABELS[item]}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Görünüm</Text>
+            <View style={styles.settingRow}>
+              <Text style={styles.text}>Tema</Text>
+              <Text style={styles.blue}>Beyzatech Koyu</Text>
+            </View>
+            <View style={styles.settingDivider} />
+            <View style={styles.settingRow}>
+              <Text style={styles.text}>Dil</Text>
+              <Text style={styles.blue}>Türkçe</Text>
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Araçlar</Text>
+            <TouchableOpacity style={styles.toolLink} onPress={() => setActiveTab("scan")}>
+              <Text style={styles.text}>⭐ Favori coin tarama</Text>
+              <Text style={styles.openChart}>Aç ›</Text>
+            </TouchableOpacity>
+            <View style={styles.settingDivider} />
+            <TouchableOpacity style={styles.toolLink} onPress={() => setActiveTab("history")}>
+              <Text style={styles.text}>🕘 Sinyal geçmişi ve risk hesabı</Text>
+              <Text style={styles.openChart}>Aç ›</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.card, styles.executionCard]}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{executionIsLive ? "⚠️" : "🧪"} {executionModeText} İŞLEM KÖPRÜSÜ</Text>
+              <Text style={executionHealth.armed ? styles.green : styles.yellow}>
+                {executionHealth.armed ? "ETKİN" : "KAPALI"}
+              </Text>
+            </View>
+            <Text style={executionIsLive ? styles.executionWarning : styles.riskNote}>
+              {executionIsLive
+                ? "GERÇEK PARA MODU: Emirler gerçek Bitget hesabına gider. API anahtarları yalnızca sunucuda tutulmalıdır."
+                : "Bitget Demo Trading modu. Bitget API anahtarları telefona girilmez."}
+            </Text>
+            <Text style={styles.executionLabel}>HTTPS sunucu adresi</Text>
+            <TextInput
+              style={styles.executionInput}
+              value={executionUrl}
+              onChangeText={setExecutionUrl}
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder="https://demo-api.ornek.com"
+              placeholderTextColor="#475569"
+            />
+            <Text style={styles.executionLabel}>Kontrol anahtarı</Text>
+            <TextInput
+              style={styles.executionInput}
+              value={executionToken}
+              onChangeText={setExecutionToken}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder="En az 24 karakter"
+              placeholderTextColor="#475569"
+            />
+            <Text style={styles.executionLabel}>{executionModeText} emir tutarı (USDT)</Text>
+            <TextInput
+              style={styles.executionInput}
+              value={demoOrderUsdt}
+              onChangeText={setDemoOrderUsdt}
+              keyboardType="decimal-pad"
+              placeholder="5"
+              placeholderTextColor="#475569"
+            />
+            <View style={styles.executionActions}>
+              <TouchableOpacity style={styles.executionButton} onPress={saveExecutionSettings} disabled={executionLoading}>
+              <Text style={styles.executionButtonText}>ADRESİ KAYDET</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.executionButton} onPress={checkExecutionHealth} disabled={executionLoading}>
+                <Text style={styles.executionButtonText}>BAĞLANTI TESTİ</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.settingDivider} />
+            <View style={styles.sectionHeader}>
+              <Text style={styles.executionLabel}>SUNUCU OTOMATİK PİLOTU</Text>
+              <Text style={executionHealth.auto?.running ? styles.green : styles.yellow}>
+                {executionHealth.auto?.running ? "7/24 ÇALIŞIYOR" : "KAPALI"}
+              </Text>
+            </View>
+            <Text style={styles.riskNote}>
+              {executionModeText} tarama Railway üzerinde yürür; telefonun açık kalması gerekmez. Günlük zarar, günlük emir, kayıp serisi, tek pozisyon ve volatilite kilitleri korunur.
+            </Text>
+            <View style={styles.executionActions}>
+              <TouchableOpacity
+                style={[styles.executionButton, !executionHealth.auto?.envAllowed && styles.disabled]}
+                onPress={() => controlAutoTrading("start")}
+                disabled={executionLoading || !executionHealth.auto?.envAllowed || executionHealth.auto?.running}
+              >
+                <Text style={styles.executionButtonText}>OTOMATİĞİ BAŞLAT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.executionButton, !executionHealth.auto?.running && styles.disabled]}
+                onPress={() => controlAutoTrading("stop")}
+                disabled={executionLoading || !executionHealth.auto?.running}
+              >
+                <Text style={styles.executionButtonText}>OTOMATİĞİ DURDUR</Text>
+              </TouchableOpacity>
+            </View>
+            {!executionHealth.auto?.envAllowed && (
+              <Text style={styles.executionWarning}>Railway değişkenlerinde AUTO_TRADING_ENABLED=true yapılmadan otomatik pilot açılamaz.</Text>
+            )}
+            <Text style={styles.executionWarning}>Acil durdur yalnızca yeni emirleri engeller; borsadaki açık pozisyonları kapatmaz.</Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.settingTitle}>Hakkında</Text>
+            <View style={styles.settingRow}>
+              <Text style={styles.text}>Sürüm</Text>
+              <Text style={styles.blue}>23.1.0</Text>
+            </View>
+            <Text style={styles.riskNote}>Veriler bilgi amaçlıdır ve yatırım tavsiyesi değildir.</Text>
+          </View>
+        </>
+      )}
+
+      {activeTab === "history" && (
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>📊 SİNYAL PERFORMANSI</Text>
+          <Text style={styles.flowDisclaimer}>
+            Kâğıt sonuçlardan tahmini %{PAPER_TRADING_COST_PERCENT.toFixed(2)} işlem maliyeti
+            düşülür. Bu istatistikler gerçek işlem sonucu veya kazanç garantisi değildir.
+          </Text>
+          <View style={styles.performanceWindowRow}>
+            {PERFORMANCE_WINDOWS.map((windowSize) => (
+              <TouchableOpacity
+                key={windowSize}
+                style={[
+                  styles.performanceWindowButton,
+                  performanceWindow === windowSize && styles.performanceWindowActive,
+                ]}
+                onPress={() => setPerformanceWindow(windowSize)}
+              >
+                <Text
+                  style={[
+                    styles.performanceWindowText,
+                    performanceWindow === windowSize && styles.performanceWindowTextActive,
+                  ]}
+                >
+                  SON {windowSize}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.validationRow}>
+            <Text style={styles.validationLabel}>MODEL DURUMU</Text>
+            <Text
+              style={[
+                styles.validationValue,
+                performanceSummary.qualityLabel === "DOĞRULANMIŞ"
+                  ? styles.green
+                  : performanceSummary.qualityLabel === "GÖZDEN GEÇİR"
+                  ? styles.red
+                  : styles.yellow,
+              ]}
+            >
+              {performanceSummary.qualityLabel}
+            </Text>
+          </View>
+          <View style={styles.confidenceTrack}>
+            <View
+              style={[
+                styles.confidenceFill,
+                { width: `${performanceSummary.sampleConfidence}%` },
+              ]}
+            />
+          </View>
+          <Text style={styles.sampleText}>
+            {performanceSummary.evaluated}/30 kapanmış sinyal • doğrulama eşiği
+          </Text>
+          <View style={styles.performanceGrid}>
+            <View style={[styles.performanceBox, styles.longFlowCard]}>
+              <Text style={styles.flowCardLabel}>BAŞARI ORANI</Text>
+              <Text style={styles.longFlowValue}>%{performanceSummary.winRate.toFixed(1)}</Text>
+            </View>
+            <View style={[styles.performanceBox, styles.shortFlowCard]}>
+              <Text style={styles.flowCardLabel}>ORTALAMA GETİRİ</Text>
+              <Text
+                style={
+                  performanceSummary.averageReturn >= 0
+                    ? styles.longFlowValue
+                    : styles.shortFlowValue
+                }
+              >
+                {performanceSummary.averageReturn >= 0 ? "+" : ""}
+                %{performanceSummary.averageReturn.toFixed(2)}
+              </Text>
+            </View>
+          </View>
+          <Metric label="Kazanan / Kaybeden" value={`${performanceSummary.wins} / ${performanceSummary.losses}`} positive={performanceSummary.wins >= performanceSummary.losses} />
+          <Metric label="Net toplam sonuç" value={`${performanceSummary.netReturn >= 0 ? "+" : ""}%${performanceSummary.netReturn.toFixed(2)}`} positive={performanceSummary.netReturn >= 0} />
+          <Metric label="Kâr faktörü" value={performanceSummary.profitFactor >= 99 ? "∞" : performanceSummary.profitFactor.toFixed(2)} positive={performanceSummary.profitFactor >= 1} />
+          <Metric label="Maksimum düşüş" value={`%${performanceSummary.maxDrawdown.toFixed(2)}`} positive={performanceSummary.maxDrawdown <= 5} />
+          <Metric label="Nötr sonuç" value={String(performanceSummary.neutrals)} positive />
+          <Metric label="Bekleyen sinyal" value={String(performanceSummary.pending)} positive />
+          <Metric label="LONG başarı" value={`%${performanceSummary.longWinRate.toFixed(1)}`} positive={performanceSummary.longWinRate >= 50} />
+          <Metric label="SHORT başarı" value={`%${performanceSummary.shortWinRate.toFixed(1)}`} positive={performanceSummary.shortWinRate >= 50} />
+          <View style={styles.pnlDivider} />
+          <Text style={styles.sectionTitle}>🎯 HEDEF YAŞAM DÖNGÜSÜ</Text>
+          <View style={styles.milestoneGrid}>
+            <View style={styles.milestoneBox}><Text style={styles.milestoneLabel}>TP1 GÖRDÜ</Text><Text style={styles.green}>{performanceSummary.tp1Reached}</Text></View>
+            <View style={styles.milestoneBox}><Text style={styles.milestoneLabel}>TP2 TAMAM</Text><Text style={styles.green}>{performanceSummary.tp2Reached}</Text></View>
+            <View style={styles.milestoneBox}><Text style={styles.milestoneLabel}>DİREKT STOP</Text><Text style={styles.red}>{performanceSummary.directStops}</Text></View>
+            <View style={styles.milestoneBox}><Text style={styles.milestoneLabel}>TP1 + STOP</Text><Text style={styles.yellow}>{performanceSummary.protectedStops}</Text></View>
+          </View>
+          <Text style={styles.flowDisclaimer}>TP1 görüldüğünde pozisyonun yarısı realize edilmiş kabul edilir; kalan yarı TP2, stop veya süre sonuna kadar izlenir.</Text>
+          <View style={styles.pnlDivider} />
+          <Text style={styles.sectionTitle}>🪙 COİN PERFORMANSI</Text>
+          {!performanceBreakdowns.coins.length && <Text style={styles.muted}>Coin kırılımı için kapanmış sonuç bekleniyor.</Text>}
+          {performanceBreakdowns.coins.map((item) => (
+            <View key={item.key} style={styles.performanceRankRow}>
+              <Text style={styles.performanceRankName}>{item.key}/USDT <Text style={styles.historyMeta}>• {item.samples} sinyal</Text></Text>
+              <Text style={item.averageReturn >= 0 ? styles.green : styles.red}>%{item.winRate.toFixed(1)} • {item.averageReturn >= 0 ? "+" : ""}%{item.averageReturn.toFixed(2)}</Text>
+            </View>
+          ))}
+          <View style={styles.pnlDivider} />
+          <Text style={styles.sectionTitle}>⏱️ ZAMAN DİLİMİ PERFORMANSI</Text>
+          {!performanceBreakdowns.timeframes.length && <Text style={styles.muted}>Zaman dilimi kırılımı için kapanmış sonuç bekleniyor.</Text>}
+          {performanceBreakdowns.timeframes.map((item) => (
+            <View key={item.key} style={styles.performanceRankRow}>
+              <Text style={styles.performanceRankName}>{item.key} <Text style={styles.historyMeta}>• {item.samples} sinyal</Text></Text>
+              <Text style={item.averageReturn >= 0 ? styles.green : styles.red}>%{item.winRate.toFixed(1)} • {item.averageReturn >= 0 ? "+" : ""}%{item.averageReturn.toFixed(2)}</Text>
+            </View>
+          ))}
+          <View style={styles.pnlDivider} />
+          <Text style={styles.sectionTitle}>🧪 WALK-FORWARD DOĞRULAMA</Text>
+          <Metric label="Eğitim / ileri test" value={`${walkForward.training} / ${walkForward.testing}`} positive={walkForward.ready} />
+          <Metric label="İleri test başarısı" value={`%${walkForward.winRate.toFixed(1)}`} positive={walkForward.winRate >= 50} />
+          <Metric label="İleri test ort. getiri" value={`${walkForward.averageReturn >= 0 ? "+" : ""}%${walkForward.averageReturn.toFixed(2)}`} positive={walkForward.averageReturn >= 0} />
+          <Text style={walkForward.status === "İLERİ TEST BAŞARILI" ? styles.green : styles.yellow}>{walkForward.status}</Text>
+          <View style={styles.pnlDivider} />
+          <Text style={styles.sectionTitle}>🌦️ REJİM BAZLI PERFORMANS</Text>
+          {!regimePerformance.length && <Text style={styles.muted}>Rejim bazlı kapanmış sonuç henüz yok.</Text>}
+          {regimePerformance.map((item) => (
+            <View key={item.regime} style={styles.metricRow}>
+              <Text style={styles.metricLabel}>{item.regime} • {item.samples}</Text>
+              <Text style={item.averageReturn >= 0 ? styles.green : styles.red}>
+                %{item.winRate.toFixed(1)} • {item.averageReturn >= 0 ? "+" : ""}%{item.averageReturn.toFixed(2)}
+              </Text>
+            </View>
+          ))}
+          {!performanceSummary.evaluated && (
+            <Text style={styles.muted}>Henüz değerlendirme süresi dolmuş sinyal yok.</Text>
+          )}
+          <View style={styles.pnlDivider} />
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>🧬 SENARYO KALİBRASYONU</Text>
+            <Text style={calibrationProfile.ready ? styles.green : styles.yellow}>
+              {calibrationProfile.ready ? "AKTİF" : "VERİ TOPLUYOR"}
+            </Text>
+          </View>
+          <Text style={styles.flowDisclaimer}>
+            En az 8 kapanmış sonuçtan önce puan değiştirilmez. Ayarlama ±8 puanla
+            sınırlandırılır; 30 örneğe kadar güven kademeli artar.
+          </Text>
+          {!calibrationProfile.ranked.length && (
+            <Text style={styles.muted}>Senaryo bazlı sonuç henüz oluşmadı.</Text>
+          )}
+          {calibrationProfile.ranked.map((scenario) => (
+            <View key={scenario.setupType} style={styles.calibrationRow}>
+              <View style={styles.calibrationInfo}>
+                <Text style={styles.calibrationName}>{scenario.setupType}</Text>
+                <Text style={styles.historyMeta}>
+                  {scenario.samples} sonuç • başarı %{scenario.winRate.toFixed(1)} • ort. {scenario.averageReturn >= 0 ? "+" : ""}%{scenario.averageReturn.toFixed(2)}
+                </Text>
+                <Text style={styles.historyMeta}>{scenario.status} • örneklem güveni %{scenario.sampleConfidence}</Text>
+              </View>
+              <Text style={scenario.adjustment >= 0 ? styles.calibrationPositive : styles.calibrationNegative}>
+                {scenario.adjustment >= 0 ? "+" : ""}{scenario.adjustment}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {activeTab === "history" && <View style={styles.card}>
+        <Text style={styles.sectionTitle}>🧮 RİSK / POZİSYON HESABI</Text>
+        <View style={styles.calcRow}>
+          <View style={styles.calcField}>
+            <Text style={styles.calcLabel}>Bakiye (USDT)</Text>
+            <TextInput
+              style={styles.calcInput}
+              value={balance}
+              onChangeText={setBalance}
+              keyboardType="decimal-pad"
+            />
+          </View>
+          <View style={styles.calcField}>
+            <Text style={styles.calcLabel}>Risk (%)</Text>
+            <TextInput
+              style={styles.calcInput}
+              value={riskPercent}
+              onChangeText={setRiskPercent}
+              keyboardType="decimal-pad"
+            />
+          </View>
+        </View>
+        <Metric label="Risk tutarı" value={`${riskAmount.toFixed(2)} USDT`} positive />
+        <Metric label="Stop mesafesi" value={`%${stopDistancePercent.toFixed(2)}`} positive={stopDistancePercent <= 3} />
+        <Metric label="Önerilen pozisyon" value={`${positionValue.toFixed(2)} USDT`} positive />
+        <View style={styles.pnlDivider} />
+        <Metric label="Stop olursa zarar" value={`-${expectedLoss.toFixed(2)} USDT`} positive={false} />
+        <Metric label="TP1 olursa kâr" value={`+${expectedTp1Profit.toFixed(2)} USDT`} positive />
+        <Metric label="TP2 olursa kâr" value={`+${expectedTp2Profit.toFixed(2)} USDT`} positive />
+        <Metric label="TP1 Risk/Ödül" value={`1:${tp1RiskReward.toFixed(2)}`} positive={tp1RiskReward >= 1.5} />
+        <Metric label="TP2 Risk/Ödül" value={`1:${tp2RiskReward.toFixed(2)}`} positive={tp2RiskReward >= 2} />
+        <View style={styles.pnlDivider} />
+        <Metric label="Dinamik risk" value={`%${dynamicRisk.appliedRiskPercent.toFixed(2)}`} positive={!dynamicRisk.hardBlock} />
+        <Metric label="Dinamik pozisyon" value={`${dynamicRisk.positionValue.toFixed(2)} USDT`} positive={!dynamicRisk.hardBlock} />
+        <Metric label="Art arda kayıp" value={String(lossStreak)} positive={lossStreak < 3} />
+        <Metric label="Bugünkü net kayıp" value={`%${dailyLossPercent.toFixed(2)}`} positive={dailyLossPercent < 3} />
+        <Text style={dynamicRisk.hardBlock ? styles.red : styles.riskNote}>{dynamicRisk.reason}</Text>
+      </View>}
+
+      {activeTab === "terminal" && (
+        <>
+      <View style={[styles.healthStrip, dataHealth.blocked && styles.healthStripBlocked]}>
+        <Text style={styles.healthStripText}>📡 {dataHealth.socketState} • VERİ %{dataHealth.score}</Text>
+        <Text style={dataHealth.blocked ? styles.red : styles.green}>{dataHealth.source}</Text>
+      </View>
+      <TimeframeMatrix matrix={timeframeMatrix} />
+
+      <View style={[styles.compactDecisionCard, { borderColor: decisionStatusColor }]}> 
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.compactDecisionEyebrow}>ANLIK KARAR</Text>
+            <Text style={[styles.compactDecisionSignal, { color: dynamicRisk.hardBlock ? "#F87171" : signalColor }]}> 
+              {dynamicRisk.hardBlock ? "İŞLEM YOK" : `${signal} ADAYI`}
+            </Text>
+          </View>
+          <View style={[styles.statusPill, { borderColor: decisionStatusColor }]}> 
+            <Text style={[styles.statusPillText, { color: decisionStatusColor }]}>{decisionStatusLabel}</Text>
+          </View>
+        </View>
+        <View style={styles.compactScoreRow}>
+          <Text style={styles.compactMetric}>Yön <Text style={styles.white}>%{decision.directionConfidence}</Text></Text>
+          <Text style={styles.compactMetric}>Giriş <Text style={styles.white}>%{decision.entryQuality}</Text></Text>
+          <Text style={styles.compactMetric}>R/Ö <Text style={decision.riskReward >= 1.5 ? styles.green : styles.red}>1:{decision.riskReward.toFixed(2)}</Text></Text>
+        </View>
+        <Text style={styles.compactReason}>{dynamicRisk.hardBlock ? dynamicRisk.reason : `${decision.regime} • ${decision.setupType}`}</Text>
+      </View>
+      <TouchableOpacity style={styles.chartSummary} onPress={() => setActiveTab("graph")}>
+        <View>
+          <Text style={styles.sectionTitle}>📈 {coin}/USDT • {TIMEFRAME_LABELS[timeframe]}</Text>
+          <Text style={styles.text}>Trend: <Text style={{ color: signalColor, fontWeight: "800" }}>{marketText}</Text></Text>
+          <Text style={styles.text}>RSI: <Text style={styles.blue}>{indicators.rsi.toFixed(1)}</Text></Text>
+        </View>
+        <Text style={styles.openChart}>Grafiği Aç ›</Text>
+      </TouchableOpacity>
+
+      <View style={[styles.card, styles.longShortCard]}>
+        <Text style={styles.label}>LONG / SHORT ORANI</Text>
+        <Text style={styles.longShortValue}>{ratio}</Text>
+      </View>
+
+      <View style={[styles.compactPlanCard, { borderColor: decisionStatusColor }]}> 
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>🎯 GİRİŞ PLANI</Text>
+          <Text style={[styles.entryStatus, { color: decisionStatusColor }]}>{decisionStatusLabel}</Text>
+        </View>
+        <Text style={styles.text}>Bölge: <Text style={styles.blue}>${Number(entryPlan.zoneLow).toFixed(4)} – ${Number(entryPlan.zoneHigh).toFixed(4)}</Text></Text>
+        <Text style={styles.compactPlanLine}>Stop <Text style={styles.red}>${stop}</Text>  •  TP1 <Text style={styles.green}>${tp1}</Text>  •  TP2 <Text style={styles.green}>${tp2}</Text></Text>
+      </View>
+
+      <TouchableOpacity style={styles.analysisButton} onPress={() => setActiveTab("analysis")}> 
+        <Text style={styles.analysisButtonText}>DETAYLI ANALİZİ AÇ  ›</Text>
+      </TouchableOpacity>
+        </>
+      )}
+
+      {activeTab === "analysis" && (
+        <>
+      <View style={styles.analysisHeader}>
+        <View>
+          <Text style={styles.screenTitle}>🧠 DETAYLI ANALİZ</Text>
+          <Text style={styles.screenSub}>{coin}/USDT • {exchange} {marketType} • {TIMEFRAME_LABELS[timeframe]}</Text>
+        </View>
+        <TouchableOpacity style={styles.backTerminalButton} onPress={() => setActiveTab("terminal")}>
+          <Text style={styles.backTerminalText}>‹ TERMİNAL</Text>
+        </TouchableOpacity>
+      </View>
+      <DataHealthCard health={dataHealth} />
+      <TradeSummary coin={coin} direction={signal} decision={decision} plan={entryPlan} risk={dynamicRisk} />
+
+      <View style={[styles.card, styles.executionCard]}>
+        <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{executionIsLive ? "⚠️" : "🧪"} BİTGET {executionModeText} EMİR</Text>
+          <Text style={executionHealth.armed ? styles.green : styles.yellow}>
+            {executionHealth.armed ? "ONAY AÇIK" : "KAPALI"}
+          </Text>
+        </View>
+        <Text style={styles.text}>{coin}/USDT • {signal} • {demoOrderUsdt || "0"} USDT • en fazla {executionMaxLeverage}x</Text>
+        <Text style={demoEntryReady ? styles.green : styles.riskNote}>
+          {demoEntryReady ? "Güvenlik şartları tamam; emir kullanıcı onayı bekliyor." : "GİRİŞ HAZIR ve tüm güvenlik şartları bekleniyor."}
+        </Text>
+        <View style={styles.executionActions}>
+          <TouchableOpacity style={styles.executionButton} onPress={armDemoExecution} disabled={executionLoading || executionHealth.armed}>
+            <Text style={styles.executionButtonText}>{executionIsLive ? "CANLIYI ETKİNLEŞTİR" : "DEMOYU ETKİNLEŞTİR"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.executionButton, (!demoEntryReady || !executionHealth.armed) && styles.disabled]} onPress={previewDemoOrder} disabled={executionLoading || !demoEntryReady || !executionHealth.armed}>
+            <Text style={styles.executionButtonText}>EMİR ÖNİZLE</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.stopButton} onPress={emergencyStop} disabled={executionLoading}>
+          <Text style={styles.stopButtonText}>ACİL DURDUR • YENİ EMİRLERİ KİLİTLE</Text>
+        </TouchableOpacity>
+        {lastDemoOrder && <Text style={styles.riskNote}>Son {executionModeText.toLowerCase()} emir: {lastDemoOrder.clientOid} • {lastDemoOrder.at}</Text>}
+      </View>
+
+      <View style={[styles.decisionCard, { borderColor: decisionStatusColor }]}> 
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>🧠 v24.1 KARAR MOTORU</Text>
+          <Text style={[styles.decisionLifecycle, { color: decisionStatusColor }]}>{decisionStatusLabel}</Text>
+        </View>
+        <View style={styles.scoreRow}>
+          <View style={styles.scoreBox}>
+            <Text style={styles.scoreLabel}>YÖN GÜVENİ</Text>
+            <Text style={[styles.scoreValue, { color: signalColor }]}>%{decision.directionConfidence}</Text>
+          </View>
+          <View style={styles.scoreBox}>
+            <Text style={styles.scoreLabel}>GİRİŞ KALİTESİ</Text>
+            <Text style={[styles.scoreValue, { color: decisionStatusColor }]}>%{decision.entryQuality}</Text>
+          </View>
+        </View>
+        <Text style={styles.text}>Piyasa rejimi: <Text style={styles.blue}>{decision.regime}</Text></Text>
+        <Text style={styles.text}>Senaryo: <Text style={styles.blue}>{decision.setupType}</Text></Text>
+        <Text style={styles.text}>Veri bütünlüğü: <Text style={styles.blue}>%{decision.dataCompleteness}</Text> • TP1 R/Ö: <Text style={decision.riskReward >= 1.5 ? styles.green : styles.red}>1:{decision.riskReward.toFixed(2)}</Text></Text>
+        <View style={styles.calibrationBadge}>
+          <Text style={styles.calibrationBadgeLabel}>MODEL KALİBRASYONU</Text>
+          <Text style={decision.calibration.adjustment >= 0 ? styles.green : styles.red}>
+            {decision.calibration.status} • {decision.calibration.samples} sonuç • {decision.calibration.adjustment >= 0 ? "+" : ""}{decision.calibration.adjustment} puan
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.whyButton} onPress={() => setShowDecisionWhy((value) => !value)}>
+          <Text style={styles.whyButtonText}>{showDecisionWhy ? "AÇIKLAMAYI KAPAT" : "NEDEN BU KARAR?"}</Text>
+        </TouchableOpacity>
+        {showDecisionWhy && (
+          <View style={styles.explanationBox}>
+            <Text style={styles.explanationLead}>{decision.explanation}</Text>
+            {decision.positives.map((item) => <Text key={`ok-${item}`} style={styles.explanationPositive}>✓ {item}</Text>)}
+            {decision.conflicts.map((item) => <Text key={`risk-${item}`} style={styles.explanationRisk}>⚠ {item}</Text>)}
+            <Text style={styles.riskNote}>{decision.safetyNote}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>💧 LİKİDİTE HARİTASI</Text>
+        <View style={styles.metricRow}>
+          <Text style={styles.metricLabel}>Üst likidite / satış kümesi</Text>
+          <Text style={styles.red}>${Number(decision.liquidityMap.sellLiquidity).toFixed(4)}</Text>
+        </View>
+        <View style={styles.metricRow}>
+          <Text style={styles.metricLabel}>Alt likidite / alış kümesi</Text>
+          <Text style={styles.green}>${Number(decision.liquidityMap.buyLiquidity).toFixed(4)}</Text>
+        </View>
+        <Text style={styles.riskNote}>Seviye testleri: üst {decision.liquidityMap.equalHighTests} • alt {decision.liquidityMap.equalLowTests}. Bunlar emir garantisi değil, fiyatın likidite arayabileceği yapısal bölgelerdir.</Text>
+      </View>
+
+      <View style={[styles.card, marketStructure.trapRisk && styles.structureRiskCard]}>
+        <Text style={styles.sectionTitle}>🧱 YAPI VE SAHTE KIRILIM FİLTRESİ</Text>
+        <Metric label="Destek gücü" value={`%${marketStructure.supportStrength} • ${marketStructure.supportTests} test`} positive={marketStructure.supportStrength >= 60} />
+        <Metric label="Direnç gücü" value={`%${marketStructure.resistanceStrength} • ${marketStructure.resistanceTests} test`} positive={marketStructure.resistanceStrength >= 60} />
+        <Metric label="Fitil baskınlığı" value={`%${marketStructure.wickDominance}`} positive={marketStructure.wickDominance < 55} />
+        <Text style={marketStructure.trapRisk ? styles.red : styles.green}>Sahte kırılım: {marketStructure.falseBreakout}</Text>
+      </View>
+
+      <View style={[styles.entryPlanCard, { borderColor: decisionStatusColor }]}> 
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>🎯 AKILLI GİRİŞ TEYİDİ</Text>
+          <Text style={[styles.entryStatus, { color: decisionStatusColor }]}>{decisionStatusLabel}</Text>
+        </View>
+        <Text style={styles.text}>
+          Giriş bölgesi: <Text style={styles.blue}>${Number(entryPlan.zoneLow).toFixed(4)} – ${Number(entryPlan.zoneHigh).toFixed(4)}</Text>
+        </Text>
+        <Text style={styles.text}>
+          Destek: <Text style={styles.green}>${Number(entryPlan.support).toFixed(4)}</Text> • Direnç: <Text style={styles.red}>${Number(entryPlan.resistance).toFixed(4)}</Text>
+        </Text>
+        <Text style={styles.text}>
+          Geçersizlik: <Text style={styles.red}>${Number(entryPlan.invalidation).toFixed(4)}</Text> • Üst zaman: <Text style={styles.blue}>{TIMEFRAME_LABELS[entryPlan.higherTimeframe] || entryPlan.higherTimeframe}</Text>
+        </Text>
+        <Text style={styles.text}>
+          Kurulum: <Text style={styles.blue}>{decision.setupType || "BEKLEME"}</Text> • Teyit: <Text style={styles.blue}>{entryPlan.confirmationCount}/{entryPlan.confirmationTotal || 8}</Text>
+        </Text>
+        <View style={styles.confirmationGrid}>
+          {entryPlan.confirmations.map((item) => (
+            <View key={item.label} style={[styles.confirmationChip, item.ok ? styles.confirmationOk : styles.confirmationWait]}>
+              <Text style={styles.confirmationText}>{item.ok ? "✓" : "•"} {item.label}</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={styles.riskNote}>
+          {dynamicRisk.hardBlock
+            ? `${dynamicRisk.reason}; güvenlik engeli kalkmadan işlem üretilmez.`
+            : entryPlan.status === "GİRİŞ HAZIR"
+            ? "Teyit koşulları oluştu; yine de pozisyon riski ve stop korunmalıdır."
+            : entryPlan.status === "İŞLEM YOK"
+            ? "Volatilite olağan dışı; fiyat sakinleşip kapanmış mum teyidi gelene kadar işlem üretilmez."
+            : "Sinyal yön gösterir; giriş için fiyat bölgesi ve teyit koşulları bekleniyor."}
+        </Text>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.text}>LONG Ortalama: <Text style={styles.blue}>${longAvg}</Text></Text>
+        <Text style={styles.text}>SHORT Ortalama: <Text style={styles.blue}>${shortAvg}</Text></Text>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>📊 MARKET YAPISI</Text>
+        <Text style={styles.text}>Yön: <Text style={{ color: signalColor, fontWeight: "700" }}>{marketText}</Text></Text>
+        <Text style={styles.text}>Giriş: <Text style={styles.blue}>${entry}</Text></Text>
+        <Text style={styles.text}>Destek: <Text style={styles.green}>${Number(entryPlan.support).toFixed(4)}</Text></Text>
+        <Text style={styles.text}>Direnç: <Text style={styles.red}>${Number(entryPlan.resistance).toFixed(4)}</Text></Text>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>⚠️ RİSK MOTORU</Text>
+        <Text style={styles.text}>Kaldıraç: <Text style={styles.yellow}>{leverage}</Text></Text>
+        <Text style={styles.text}>Stop: <Text style={styles.red}>${stop}</Text></Text>
+        <Text style={styles.text}>TP1: <Text style={styles.green}>${tp1}</Text></Text>
+        <Text style={styles.text}>TP2: <Text style={styles.green}>${tp2}</Text></Text>
+        <Text style={styles.riskNote}>Kaldıraç önerisi bilgi amaçlıdır; pozisyon büyüklüğünü bakiyenize göre belirleyin.</Text>
+      </View>
+
+      <AIComment data={ai} />
+        </>
+      )}
+
+      {activeTab === "history" && <View style={styles.card}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>🕘 SİNYAL GEÇMİŞİ</Text>
+          <View style={styles.journalActions}>
+            <TouchableOpacity onPress={exportSignalJournal} disabled={!history.length}>
+              <Text style={styles.exportText}>CSV PAYLAŞ</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setHistory([]);
+                AsyncStorage.removeItem("beyzatech_signal_history");
+              }}
+            >
+              <Text style={styles.clearText}>TEMİZLE</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {!history.length && <Text style={styles.muted}>Henüz kayıtlı sinyal yok.</Text>}
+        {history.slice(0, 10).map((item) => (
+          <View style={styles.historyRow} key={item.id}>
+            <View>
+              <Text style={styles.historyCoin}>{item.coin}/USDT • {TIMEFRAME_LABELS[item.timeframe] || item.timeframe}</Text>
+              <Text style={styles.historyMeta}>{item.exchange} {item.marketType || "SPOT"} • {item.time} • ${item.price}</Text>
+              {item.marketRegime && (
+                <Text style={styles.historyMeta}>{item.marketRegime} • {item.setupType} • {item.lifecycle}</Text>
+              )}
+              {item.evaluationStatus === "PENDING" && (
+                <Text style={styles.historyMeta}>⏳ {item.resultStage || "Değerlendirme bekleniyor"}</Text>
+              )}
+              {["WIN", "LOSS", "NEUTRAL"].includes(item.evaluationStatus) && (
+                <Text style={styles.historyMeta}>
+                  Sonuç fiyatı ${Number(item.evaluatedPrice).toFixed(4)} •{" "}
+                  {Number(item.signalReturn) >= 0 ? "+" : ""}
+                  %{Number(item.signalReturn).toFixed(2)} net
+                </Text>
+              )}
+              {Number.isFinite(item.maxFavorableExcursion) && (
+                <Text style={styles.historyMeta}>
+                  MFE +%{Number(item.maxFavorableExcursion).toFixed(2)} • MAE -%{Number(item.maxAdverseExcursion).toFixed(2)} • {item.exitReason}
+                </Text>
+              )}
+            </View>
+            <View style={styles.marketPriceWrap}>
+              <Text style={{ color: item.direction === "LONG" ? "#10B981" : "#F87171", fontWeight: "800" }}>
+                {item.direction} Y%{item.directionConfidence ?? item.score}
+              </Text>
+              {Number.isFinite(item.entryQuality) && (
+                <Text style={styles.historyMeta}>Giriş %{item.entryQuality}</Text>
+              )}
+              {item.evaluationStatus && item.evaluationStatus !== "PENDING" && (
+                <Text
+                  style={{
+                    color:
+                      item.evaluationStatus === "WIN"
+                        ? "#10B981"
+                        : item.evaluationStatus === "LOSS"
+                        ? "#F87171"
+                        : "#FBBF24",
+                    fontWeight: "900",
+                    fontSize: 11,
+                    marginTop: 3,
+                  }}
+                >
+                  {item.evaluationStatus === "WIN"
+                    ? "KAZANDI"
+                    : item.evaluationStatus === "LOSS"
+                    ? "KAYBETTİ"
+                    : "NÖTR"}
+                </Text>
+              )}
+            </View>
+          </View>
+        ))}
+      </View>}
+      </ScrollView>
+
+      <View
+        style={[
+          styles.bottomNav,
+          {
+            height: 68 + insets.bottom,
+            paddingBottom: Math.max(insets.bottom, 4),
+          },
+        ]}
+      >
+        <TabButton icon="⚡" label="Terminal" tab="terminal" activeTab={activeTab} onPress={setActiveTab} />
+        <TabButton icon="🧠" label="Analiz" tab="analysis" activeTab={activeTab} onPress={setActiveTab} />
+        <TabButton icon="📊" label="Piyasalar" tab="markets" activeTab={activeTab} onPress={setActiveTab} />
+        <TabButton icon="🔔" label="Alarmlar" tab="alarms" activeTab={activeTab} onPress={setActiveTab} />
+        <TabButton icon="⚙️" label="Ayarlar" tab="settings" activeTab={activeTab} onPress={setActiveTab} />
+      </View>
+    </View>
+  );
+}
+
+function Metric({ label, value, positive }) {
+  return (
+    <View style={styles.metricRow}>
+      <Text style={styles.metricLabel}>{label}</Text>
+      <Text style={[styles.metricValue, { color: positive ? "#10B981" : "#F87171" }]}>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function TabButton({ icon, label, tab, activeTab, onPress }) {
+  const active = tab === activeTab;
+  return (
+    <TouchableOpacity style={styles.tabButton} onPress={() => onPress(tab)}>
+      <Text style={[styles.tabIcon, active && styles.activeTabText]}>{icon}</Text>
+      <Text style={[styles.tabLabel, active && styles.activeTabText]}>{label}</Text>
+      {active && <View style={styles.tabIndicator} />}
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: "#090D16" },
+  content: { padding: 20, paddingBottom: 130 },
+  title: { color: "#FFF", fontSize: 24, fontWeight: "800", marginTop: 4 },
+  version: { color: "#38BDF8", fontSize: 15 },
+  sub: { color: "#38BDF8", marginTop: 4, marginBottom: 10 },
+  searchRow: { flexDirection: "row", gap: 10, alignItems: "center" },
+  coinInputContainer: {
+    flex: 1, height: 48, flexDirection: "row", alignItems: "center",
+    paddingLeft: 14, paddingRight: 12, borderRadius: 10,
+    backgroundColor: "#1E293B", borderWidth: 1, borderColor: "#334155",
+  },
+  coinInput: {
+    flex: 1, height: 48, paddingVertical: 0, paddingRight: 8,
+    color: "#FFF", fontSize: 18, fontWeight: "700",
+  },
+  coinSuffix: { color: "#38BDF8", fontSize: 13, fontWeight: "800" },
+  scanButton: {
+    width: 48, height: 48, borderRadius: 24, alignItems: "center",
+    justifyContent: "center", backgroundColor: "#2563EB", borderWidth: 2,
+    borderColor: "#38BDF8", elevation: 7,
+  },
+  scanIcon: { fontSize: 23 },
+  disabled: { opacity: 0.6 },
+  statusRow: { marginTop: 9, flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap", gap: 5 },
+  status: { color: "#10B981", fontWeight: "700", fontSize: 12 },
+  statusError: { color: "#F87171" },
+  meta: { color: "#94A3B8", fontSize: 12 },
+  errorBox: { color: "#FCA5A5", backgroundColor: "#450A0A", padding: 10, borderRadius: 8, marginTop: 10 },
+  warningBox: { color: "#FDE68A", backgroundColor: "#422006", padding: 10, borderRadius: 8, marginTop: 10, fontSize: 12 },
+  card: {
+    backgroundColor: "#111827", padding: 15, marginTop: 10, borderRadius: 10,
+    borderWidth: 1, borderColor: "#1E293B",
+  },
+  healthStrip: {
+    marginTop: 10, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 8,
+    backgroundColor: "#0B1F1D", borderWidth: 1, borderColor: "#047857",
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+  },
+  healthStripBlocked: { backgroundColor: "#2A1118", borderColor: "#B91C1C" },
+  healthStripText: { color: "#CBD5E1", fontSize: 10, fontWeight: "900" },
+  compactDecisionCard: {
+    backgroundColor: "#111827", padding: 14, marginTop: 10, borderRadius: 10, borderWidth: 1,
+  },
+  compactDecisionEyebrow: { color: "#64748B", fontSize: 9, fontWeight: "900" },
+  compactDecisionSignal: { fontSize: 21, fontWeight: "900", marginTop: 3 },
+  statusPill: {
+    borderWidth: 1, backgroundColor: "#0B1220", borderRadius: 15,
+    paddingHorizontal: 10, paddingVertical: 6, maxWidth: "48%",
+  },
+  statusPillText: { fontSize: 9, fontWeight: "900", textAlign: "center" },
+  compactScoreRow: {
+    flexDirection: "row", justifyContent: "space-between", borderTopWidth: 1,
+    borderTopColor: "#1E293B", paddingTop: 10, marginTop: 10,
+  },
+  compactMetric: { color: "#94A3B8", fontSize: 11, fontWeight: "800" },
+  white: { color: "#FFF", fontWeight: "900" },
+  compactReason: { color: "#64748B", fontSize: 10, marginTop: 8 },
+  compactPlanCard: {
+    backgroundColor: "#111827", padding: 13, marginTop: 10, borderRadius: 10, borderWidth: 1,
+  },
+  compactPlanLine: { color: "#CBD5E1", fontSize: 11, marginTop: 5 },
+  analysisButton: {
+    backgroundColor: "#1D4ED8", borderRadius: 9, paddingVertical: 12,
+    alignItems: "center", marginTop: 10, borderWidth: 1, borderColor: "#38BDF8",
+  },
+  analysisButtonText: { color: "#FFF", fontSize: 11, fontWeight: "900" },
+  analysisHeader: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    marginTop: 8, marginBottom: 4,
+  },
+  backTerminalButton: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#334155",
+    paddingHorizontal: 10, paddingVertical: 8, borderRadius: 8,
+  },
+  backTerminalText: { color: "#38BDF8", fontSize: 9, fontWeight: "900" },
+  structureRiskCard: { borderColor: "#F87171", backgroundColor: "#1F1118" },
+  longShortCard: {
+    padding: 12, flexDirection: "row", alignItems: "center",
+    justifyContent: "space-between",
+  },
+  longShortValue: { color: "#38BDF8", fontSize: 19, fontWeight: "800" },
+  entryPlanCard: {
+    backgroundColor: "#111827", padding: 14, marginTop: 10, borderRadius: 10,
+    borderWidth: 1,
+  },
+  entryStatus: { fontSize: 10, fontWeight: "900" },
+  confirmationGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 9 },
+  confirmationChip: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 5, borderWidth: 1 },
+  confirmationOk: { backgroundColor: "#052E2B", borderColor: "#047857" },
+  confirmationWait: { backgroundColor: "#1E293B", borderColor: "#334155" },
+  confirmationText: { color: "#CBD5E1", fontSize: 9, fontWeight: "800" },
+  livePriceCard: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 12 },
+  label: { color: "#94A3B8", fontSize: 13, fontWeight: "700" },
+  price: { color: "#38BDF8", fontSize: 24, fontWeight: "800" },
+  row: { flexDirection: "row", gap: 8, marginTop: 8 },
+  option: { flex: 1, paddingVertical: 9, paddingHorizontal: 8, borderRadius: 7, alignItems: "center", backgroundColor: "#1E293B", borderWidth: 1, borderColor: "#334155" },
+  activeOption: { backgroundColor: "#2563EB", borderWidth: 2, borderColor: "#38BDF8", paddingVertical: 8 },
+  optionText: { color: "#CBD5E1", fontWeight: "700", fontSize: 12 },
+  activeOptionText: { color: "#FFF" },
+  marketTypeRow: { flexDirection: "row", gap: 8, marginTop: 8 },
+  marketTypeButton: { flex: 1, paddingVertical: 8, alignItems: "center", borderRadius: 7, backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B" },
+  activeMarketType: { backgroundColor: "#7C3AED", borderColor: "#A78BFA" },
+  marketTypeText: { color: "#64748B", fontWeight: "800", fontSize: 11 },
+  activeMarketTypeText: { color: "#FFF" },
+  timeRow: { flexDirection: "row", gap: 7, marginTop: 10 },
+  timeButton: { flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 7, backgroundColor: "#111827" },
+  activeTime: { backgroundColor: "#0EA5E9" },
+  timeText: { color: "#94A3B8", fontWeight: "700" },
+  activeTimeText: { color: "#FFF" },
+  sectionTitle: { color: "#38BDF8", fontWeight: "800", fontSize: 15, marginBottom: 8 },
+  text: { color: "#E2E8F0", fontSize: 14, lineHeight: 23 },
+  value: { color: "#38BDF8", fontSize: 20, fontWeight: "700", marginTop: 4 },
+  blue: { color: "#38BDF8", fontWeight: "700" },
+  green: { color: "#10B981", fontWeight: "700" },
+  red: { color: "#F87171", fontWeight: "700" },
+  yellow: { color: "#FBBF24", fontWeight: "700" },
+  signal: { padding: 15, marginTop: 10, borderRadius: 10 },
+  signalText: { color: "#FFF", textAlign: "center", fontSize: 20, fontWeight: "800" },
+  decisionCard: {
+    backgroundColor: "#111827", padding: 14, marginTop: 10, borderRadius: 10,
+    borderWidth: 1,
+  },
+  decisionLifecycle: { fontSize: 10, fontWeight: "900", maxWidth: "48%", textAlign: "right" },
+  scoreRow: { flexDirection: "row", gap: 8, marginBottom: 10 },
+  scoreBox: { flex: 1, backgroundColor: "#0B1220", borderRadius: 8, padding: 10, borderWidth: 1, borderColor: "#1E293B" },
+  scoreLabel: { color: "#94A3B8", fontSize: 9, fontWeight: "800" },
+  scoreValue: { fontSize: 22, fontWeight: "900", marginTop: 3 },
+  whyButton: { backgroundColor: "#1D4ED8", borderRadius: 7, paddingVertical: 9, alignItems: "center", marginTop: 10 },
+  whyButtonText: { color: "#FFF", fontSize: 11, fontWeight: "900" },
+  explanationBox: { backgroundColor: "#0B1220", borderRadius: 8, padding: 10, marginTop: 8 },
+  explanationLead: { color: "#E2E8F0", fontSize: 12, lineHeight: 18, marginBottom: 6, fontWeight: "700" },
+  explanationPositive: { color: "#6EE7B7", fontSize: 11, lineHeight: 18 },
+  explanationRisk: { color: "#FCA5A5", fontSize: 11, lineHeight: 18 },
+  metricRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 4 },
+  metricLabel: { color: "#CBD5E1" },
+  metricValue: { fontWeight: "800" },
+  riskNote: { color: "#64748B", fontSize: 11, lineHeight: 16, marginTop: 8 },
+  quickActions: { flexDirection: "row", gap: 8, marginTop: 9 },
+  smallAction: { flex: 1, backgroundColor: "#111827", borderWidth: 1, borderColor: "#334155", padding: 9, borderRadius: 7, alignItems: "center" },
+  alarmActive: { backgroundColor: "#713F12", borderColor: "#FBBF24" },
+  smallActionText: { color: "#CBD5E1", fontSize: 11, fontWeight: "800" },
+  sectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
+  multiScanButton: { backgroundColor: "#2563EB", paddingHorizontal: 9, paddingVertical: 6, borderRadius: 6 },
+  multiScanText: { color: "#FFF", fontWeight: "800", fontSize: 10 },
+  favoriteRow: { flexDirection: "row", gap: 7, marginVertical: 7 },
+  favoriteChip: { flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: "#1E293B", paddingLeft: 11, paddingRight: 8, paddingVertical: 7, borderRadius: 16 },
+  favoriteText: { color: "#FFF", fontWeight: "800" },
+  removeFavorite: { color: "#F87171", fontSize: 18, lineHeight: 18 },
+  scanResult: { flexDirection: "row", justifyContent: "space-between", borderTopWidth: 1, borderTopColor: "#1E293B", paddingVertical: 8 },
+  resultCoin: { color: "#E2E8F0", fontWeight: "700" },
+  calcRow: { flexDirection: "row", gap: 9, marginBottom: 8 },
+  calcField: { flex: 1 },
+  calcLabel: { color: "#94A3B8", fontSize: 11, marginBottom: 4 },
+  calcInput: { backgroundColor: "#1E293B", color: "#FFF", padding: 9, borderRadius: 7, borderWidth: 1, borderColor: "#334155" },
+  clearText: { color: "#F87171", fontSize: 11, fontWeight: "800" },
+  exportText: { color: "#38BDF8", fontSize: 10, fontWeight: "900" },
+  journalActions: { flexDirection: "row", alignItems: "center", gap: 12 },
+  muted: { color: "#64748B", paddingVertical: 8 },
+  historyRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: "#1E293B", paddingVertical: 9 },
+  historyCoin: { color: "#E2E8F0", fontWeight: "700" },
+  historyMeta: { color: "#64748B", fontSize: 11, marginTop: 2 },
+  pnlDivider: { height: 1, backgroundColor: "#1E293B", marginVertical: 8 },
+  chartSummary: {
+    backgroundColor: "#111827", padding: 15, marginTop: 10, borderRadius: 10,
+    borderWidth: 1, borderColor: "#1E293B", flexDirection: "row",
+    justifyContent: "space-between", alignItems: "center",
+  },
+  openChart: { color: "#38BDF8", fontWeight: "800", fontSize: 13 },
+  screenHeader: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    marginTop: 16, marginBottom: 2,
+  },
+  screenTitle: { color: "#FFF", fontSize: 21, fontWeight: "900" },
+  screenSub: { color: "#64748B", fontSize: 11, marginTop: 3 },
+  refreshButton: {
+    width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",
+    backgroundColor: "#1E293B", borderWidth: 1, borderColor: "#334155",
+  },
+  refreshText: { color: "#38BDF8", fontSize: 24, fontWeight: "900" },
+  marketToolbar: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B",
+    padding: 10, borderRadius: 10, marginTop: 10,
+  },
+  marketSearch: {
+    backgroundColor: "#1E293B", color: "#FFF", paddingHorizontal: 12, paddingVertical: 10,
+    borderRadius: 8, borderWidth: 1, borderColor: "#334155",
+  },
+  sortRow: { flexDirection: "row", gap: 6, marginTop: 8 },
+  sortButton: {
+    flex: 1, backgroundColor: "#0F172A", borderRadius: 7, paddingVertical: 7,
+    alignItems: "center",
+  },
+  sortActive: { backgroundColor: "#0EA5E9" },
+  sortText: { color: "#64748B", fontSize: 10, fontWeight: "800" },
+  sortTextActive: { color: "#FFF" },
+  gaugeCard: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B",
+    padding: 12, borderRadius: 10, marginTop: 10, flexDirection: "row",
+    justifyContent: "space-between", alignItems: "center",
+  },
+  gaugeCopy: { flex: 1, paddingRight: 4 },
+  gaugeCoin: { color: "#FFF", fontSize: 18, fontWeight: "900" },
+  gaugeNote: { color: "#64748B", fontSize: 10, lineHeight: 15, marginTop: 4 },
+  marketRow: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B",
+    borderRadius: 10, padding: 11, marginTop: 8, flexDirection: "row", alignItems: "center",
+  },
+  coinBadge: {
+    width: 38, height: 38, borderRadius: 19, backgroundColor: "#1E293B",
+    borderWidth: 1, borderColor: "#38BDF8", alignItems: "center", justifyContent: "center",
+  },
+  coinBadgeText: { color: "#38BDF8", fontSize: 11, fontWeight: "900" },
+  marketNameWrap: { flex: 1, marginLeft: 10 },
+  marketName: { color: "#FFF", fontSize: 14, fontWeight: "900" },
+  marketMeta: { color: "#64748B", fontSize: 10, marginTop: 2 },
+  marketPriceWrap: { alignItems: "flex-end" },
+  marketPrice: { color: "#E2E8F0", fontSize: 14, fontWeight: "800" },
+  favoriteStar: { color: "#64748B", fontSize: 21, marginLeft: 10 },
+  favoriteStarActive: { color: "#FBBF24" },
+  addAlarmButton: {
+    width: 44, height: 44, borderRadius: 22, backgroundColor: "#2563EB",
+    alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "#38BDF8",
+  },
+  addAlarmText: { color: "#FFF", fontSize: 26, fontWeight: "700" },
+  alarmCard: { backgroundColor: "#0F172A", padding: 12, borderRadius: 9, borderWidth: 1, borderColor: "#334155" },
+  alarmTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 },
+  alarmCoin: { color: "#FFF", fontSize: 17, fontWeight: "900" },
+  alarmState: { fontSize: 11, fontWeight: "900" },
+  alarmActions: { flexDirection: "row", gap: 8, marginTop: 10 },
+  alarmAction: { flex: 1, backgroundColor: "#1E293B", padding: 9, borderRadius: 7, alignItems: "center" },
+  alarmActionText: { color: "#FBBF24", fontSize: 10, fontWeight: "900" },
+  deleteAlarm: { backgroundColor: "#450A0A" },
+  deleteAlarmText: { color: "#F87171", fontSize: 10, fontWeight: "900" },
+  completedAlarmRow: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    borderTopWidth: 1, borderTopColor: "#1E293B", paddingVertical: 10,
+  },
+  settingTitle: { color: "#FFF", fontSize: 15, fontWeight: "900", marginBottom: 3 },
+  executionCard: { borderColor: "#7C3AED" },
+  executionLabel: { color: "#94A3B8", fontSize: 10, fontWeight: "800", marginTop: 10, marginBottom: 4 },
+  executionInput: {
+    backgroundColor: "#0B1220", color: "#FFF", borderWidth: 1, borderColor: "#334155",
+    borderRadius: 8, paddingHorizontal: 11, paddingVertical: 10, fontSize: 12,
+  },
+  executionActions: { flexDirection: "row", gap: 8, marginTop: 10 },
+  executionButton: { flex: 1, backgroundColor: "#2563EB", borderRadius: 8, paddingVertical: 10, alignItems: "center" },
+  executionButtonText: { color: "#FFF", fontSize: 9, fontWeight: "900", textAlign: "center" },
+  stopButton: { backgroundColor: "#450A0A", borderWidth: 1, borderColor: "#EF4444", borderRadius: 8, paddingVertical: 10, alignItems: "center", marginTop: 9 },
+  stopButtonText: { color: "#FCA5A5", fontSize: 9, fontWeight: "900" },
+  executionWarning: { color: "#FCA5A5", fontSize: 9, lineHeight: 14, marginTop: 9 },
+  settingRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 7 },
+  settingDivider: { height: 1, backgroundColor: "#1E293B" },
+  toolLink: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 9 },
+  flowTabs: {
+    flexDirection: "row", backgroundColor: "#111827", padding: 4, borderRadius: 9,
+    marginTop: 10, borderWidth: 1, borderColor: "#1E293B",
+  },
+  flowTab: { flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 7 },
+  flowTabActive: { backgroundColor: "#2563EB" },
+  flowTabText: { color: "#64748B", fontSize: 8, fontWeight: "900" },
+  flowTabTextActive: { color: "#FFF" },
+  scannerControlCard: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B",
+    borderRadius: 10, padding: 10, marginTop: 10,
+  },
+  scannerControlTitle: {
+    color: "#64748B", fontSize: 9, fontWeight: "900", marginTop: 4, marginBottom: 5,
+  },
+  scannerChoiceRow: { flexDirection: "row", gap: 6, marginBottom: 5 },
+  scannerChoiceButton: {
+    flex: 1, backgroundColor: "#0F172A", borderWidth: 1, borderColor: "#1E293B",
+    borderRadius: 7, alignItems: "center", paddingVertical: 7,
+  },
+  scannerChoiceActive: { backgroundColor: "#0EA5E9", borderColor: "#38BDF8" },
+  scannerChoiceText: { color: "#64748B", fontSize: 10, fontWeight: "900" },
+  scannerChoiceTextActive: { color: "#FFF" },
+  scannerSummaryRow: { flexDirection: "row", gap: 7, marginTop: 10 },
+  scannerSummaryBox: {
+    flex: 1, backgroundColor: "#111827", borderWidth: 1, borderColor: "#334155",
+    borderRadius: 9, padding: 10, alignItems: "center",
+  },
+  scannerLongBorder: { borderColor: "#14532D" },
+  scannerShortBorder: { borderColor: "#7F1D1D" },
+  scannerSummaryLabel: { color: "#94A3B8", fontSize: 8, fontWeight: "900" },
+  scannerLongValue: { color: "#10B981", fontSize: 17, fontWeight: "900", marginTop: 3 },
+  scannerShortValue: { color: "#F87171", fontSize: 17, fontWeight: "900", marginTop: 3 },
+  scannerNeutralValue: { color: "#38BDF8", fontSize: 17, fontWeight: "900", marginTop: 3 },
+  scannerUniverseNote: { color: "#64748B", fontSize: 9, lineHeight: 14, marginTop: 8 },
+  scannerSignalCard: {
+    backgroundColor: "#111827", borderWidth: 1, borderRadius: 11,
+    padding: 12, marginTop: 9,
+  },
+  scannerSignalHeader: {
+    flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between",
+  },
+  scannerCoin: { color: "#FFF", fontSize: 17, fontWeight: "900" },
+  scannerSignalMeta: { color: "#64748B", fontSize: 9, marginTop: 3 },
+  scannerBadgeGroup: { alignItems: "flex-end" },
+  scannerDirectionBadge: { borderRadius: 6, paddingHorizontal: 9, paddingVertical: 4 },
+  scannerLongBadge: { backgroundColor: "#064E3B" },
+  scannerShortBadge: { backgroundColor: "#7F1D1D" },
+  scannerDirectionText: { color: "#FFF", fontSize: 9, fontWeight: "900" },
+  scannerBadgeRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8 },
+  scannerLifecycleBadge: {
+    alignSelf: "flex-start", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4,
+    borderWidth: 1,
+  },
+  scannerLifecycleReady: { backgroundColor: "#052E2B", borderColor: "#10B981" },
+  scannerQualityStrong: { backgroundColor: "#082F49", borderColor: "#38BDF8" },
+  scannerLifecycleWatch: { backgroundColor: "#291F08", borderColor: "#FBBF24" },
+  scannerQualityWeak: { backgroundColor: "#1E293B", borderColor: "#64748B" },
+  scannerLifecycleText: { color: "#FFF", fontSize: 8, fontWeight: "900" },
+  scannerScoreRow: { flexDirection: "row", gap: 6, marginTop: 8 },
+  scannerScoreBox: {
+    flex: 1, backgroundColor: "#0B1220", borderWidth: 1, borderColor: "#1E293B",
+    borderRadius: 7, paddingVertical: 6, alignItems: "center",
+  },
+  scannerScoreLabel: { color: "#64748B", fontSize: 7, fontWeight: "900" },
+  scannerScoreValue: { color: "#38BDF8", fontSize: 11, fontWeight: "900", marginTop: 2 },
+  scannerLevels: { flexDirection: "row", gap: 6, marginTop: 10 },
+  scannerLevelBox: {
+    flex: 1, backgroundColor: "#0F172A", borderRadius: 7, padding: 7,
+    borderWidth: 1, borderColor: "#1E293B",
+  },
+  scannerLevelLabel: { color: "#64748B", fontSize: 7, fontWeight: "900" },
+  scannerLevelValue: { color: "#E2E8F0", fontSize: 10, fontWeight: "900", marginTop: 2 },
+  scannerStopValue: { color: "#F87171", fontSize: 10, fontWeight: "900", marginTop: 2 },
+  scannerTpValue: { color: "#10B981", fontSize: 10, fontWeight: "900", marginTop: 2 },
+  scannerDetailsRow: {
+    flexDirection: "row", justifyContent: "space-between", marginTop: 8,
+    borderTopWidth: 1, borderTopColor: "#1E293B", paddingTop: 7,
+  },
+  scannerDetail: { color: "#94A3B8", fontSize: 9, fontWeight: "800" },
+  scannerReasons: { marginTop: 7 },
+  scannerReason: { color: "#CBD5E1", fontSize: 9, lineHeight: 14 },
+  scannerOpenText: {
+    color: "#38BDF8", fontSize: 10, fontWeight: "900", textAlign: "right", marginTop: 7,
+  },
+  whaleThresholdRow: { flexDirection: "row", gap: 7, marginTop: 10 },
+  whaleThresholdButton: {
+    flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 8,
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#334155",
+  },
+  whaleThresholdActive: { backgroundColor: "#0EA5E9", borderColor: "#38BDF8" },
+  whaleThresholdText: { color: "#94A3B8", fontSize: 11, fontWeight: "900" },
+  whaleThresholdTextActive: { color: "#FFF" },
+  whaleNetCard: {
+    backgroundColor: "#111827", padding: 15, marginTop: 10, borderRadius: 10,
+    borderWidth: 1, borderColor: "#1D4ED8",
+  },
+  liquidationPeriodRow: { flexDirection: "row", gap: 7, marginTop: 10 },
+  liquidationPeriodButton: {
+    flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 8,
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#1E293B",
+  },
+  liquidationPeriodActive: { backgroundColor: "#DC2626", borderColor: "#F87171" },
+  liquidationPeriodText: { color: "#94A3B8", fontSize: 12, fontWeight: "900" },
+  liquidationPeriodTextActive: { color: "#FFF" },
+  liquidationTotalCard: {
+    backgroundColor: "#111827", padding: 15, marginTop: 10, borderRadius: 10,
+    borderWidth: 1, borderColor: "#7F1D1D",
+  },
+  liquidationTotalValue: {
+    color: "#FBBF24", fontSize: 25, fontWeight: "900", marginTop: 5,
+  },
+  flowCoinRow: { flexDirection: "row", gap: 7, marginTop: 10, paddingRight: 2 },
+  flowCoinButton: {
+    backgroundColor: "#111827", borderWidth: 1, borderColor: "#334155",
+    borderRadius: 16, paddingHorizontal: 16, paddingVertical: 8,
+  },
+  flowCoinActive: { backgroundColor: "#0EA5E9", borderColor: "#38BDF8" },
+  flowCoinText: { color: "#94A3B8", fontWeight: "900", fontSize: 11 },
+  flowCoinTextActive: { color: "#FFF" },
+  flowRatioRow: { flexDirection: "row", gap: 8, marginTop: 10 },
+  performanceGrid: { flexDirection: "row", gap: 8, marginVertical: 10 },
+  performanceBox: {
+    flex: 1, borderRadius: 10, padding: 12, borderWidth: 1, backgroundColor: "#0F172A",
+  },
+  performanceWindowRow: { flexDirection: "row", gap: 7, marginTop: 8 },
+  performanceWindowButton: {
+    flex: 1, alignItems: "center", paddingVertical: 8, borderRadius: 7,
+    backgroundColor: "#0F172A", borderWidth: 1, borderColor: "#334155",
+  },
+  performanceWindowActive: { backgroundColor: "#0EA5E9", borderColor: "#38BDF8" },
+  performanceWindowText: { color: "#64748B", fontSize: 9, fontWeight: "900" },
+  performanceWindowTextActive: { color: "#FFF" },
+  validationRow: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 12,
+  },
+  validationLabel: { color: "#94A3B8", fontSize: 10, fontWeight: "900" },
+  validationValue: { fontSize: 11, fontWeight: "900" },
+  confidenceTrack: {
+    height: 7, backgroundColor: "#1E293B", borderRadius: 4, overflow: "hidden", marginTop: 8,
+  },
+  confidenceFill: { height: 7, backgroundColor: "#38BDF8", borderRadius: 4 },
+  sampleText: { color: "#64748B", fontSize: 9, marginTop: 5 },
+  milestoneGrid: { flexDirection: "row", flexWrap: "wrap", gap: 7, marginBottom: 8 },
+  milestoneBox: {
+    width: "48%", backgroundColor: "#0B1220", borderWidth: 1, borderColor: "#1E293B",
+    borderRadius: 8, padding: 9, flexDirection: "row", justifyContent: "space-between",
+  },
+  milestoneLabel: { color: "#94A3B8", fontSize: 9, fontWeight: "900" },
+  performanceRankRow: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    borderTopWidth: 1, borderTopColor: "#1E293B", paddingVertical: 8, gap: 8,
+  },
+  performanceRankName: { color: "#E2E8F0", fontSize: 11, fontWeight: "900", flex: 1 },
+  calibrationRow: {
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+    borderTopWidth: 1, borderTopColor: "#1E293B", paddingVertical: 9, gap: 8,
+  },
+  calibrationInfo: { flex: 1 },
+  calibrationName: { color: "#E2E8F0", fontSize: 11, fontWeight: "900" },
+  calibrationPositive: { color: "#10B981", fontSize: 18, fontWeight: "900" },
+  calibrationNegative: { color: "#F87171", fontSize: 18, fontWeight: "900" },
+  calibrationBadge: {
+    backgroundColor: "#0B1220", borderWidth: 1, borderColor: "#1E3A8A",
+    borderRadius: 7, padding: 8, marginTop: 8,
+  },
+  calibrationBadgeLabel: { color: "#94A3B8", fontSize: 8, fontWeight: "900", marginBottom: 3 },
+  flowRatioCard: {
+    flex: 1, borderRadius: 10, padding: 12, borderWidth: 1, backgroundColor: "#111827",
+  },
+  longFlowCard: { borderColor: "#14532D" },
+  shortFlowCard: { borderColor: "#7F1D1D" },
+  flowCardLabel: { color: "#94A3B8", fontSize: 9, fontWeight: "900" },
+  longFlowValue: { color: "#10B981", fontSize: 16, fontWeight: "900", marginTop: 4 },
+  shortFlowValue: { color: "#F87171", fontSize: 16, fontWeight: "900", marginTop: 4 },
+  noDataValue: { color: "#94A3B8", fontSize: 13, fontWeight: "900", marginTop: 7 },
+  flowUpdateText: { color: "#64748B", fontSize: 10, textAlign: "right", marginTop: 6 },
+  ratioTrack: { height: 5, backgroundColor: "#1E293B", borderRadius: 3, marginTop: 8, overflow: "hidden" },
+  longTrack: { height: 5, backgroundColor: "#10B981", borderRadius: 3 },
+  shortTrack: { height: 5, backgroundColor: "#EF4444", borderRadius: 3 },
+  flowDataRow: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    paddingVertical: 9, borderTopWidth: 1, borderTopColor: "#1E293B",
+  },
+  flowDisclaimer: { color: "#64748B", fontSize: 10, marginBottom: 6 },
+  tradeRow: {
+    flexDirection: "row", alignItems: "center", paddingVertical: 9,
+    borderTopWidth: 1, borderTopColor: "#1E293B",
+  },
+  tradeSide: { width: 46, borderRadius: 6, alignItems: "center", paddingVertical: 5 },
+  buySide: { backgroundColor: "#064E3B" },
+  sellSide: { backgroundColor: "#7F1D1D" },
+  tradeSideText: { color: "#FFF", fontSize: 9, fontWeight: "900" },
+  bottomNav: {
+    height: 68, backgroundColor: "#0F172A", borderTopWidth: 1,
+    borderTopColor: "#1E293B", flexDirection: "row",
+  },
+  tabButton: { flex: 1, alignItems: "center", justifyContent: "center", position: "relative" },
+  tabIcon: { fontSize: 19, opacity: 0.65 },
+  tabLabel: { color: "#64748B", fontSize: 10, fontWeight: "700", marginTop: 2 },
+  activeTabText: { color: "#38BDF8", opacity: 1 },
+  tabIndicator: { position: "absolute", top: 0, width: 28, height: 3, borderRadius: 2, backgroundColor: "#38BDF8" },
+});
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6

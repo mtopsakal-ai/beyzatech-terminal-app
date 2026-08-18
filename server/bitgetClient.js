@@ -48,9 +48,18 @@ async function bitgetRequest(method, requestPath, { query = "", payload, authent
   });
   const json = await response.json().catch(() => ({}));
   if (!response.ok || json.code !== "00000") {
+<<<<<<< HEAD
     throw new Error(`Bitget: ${json.msg || response.statusText || "istek başarısız"}`);
   }
   return json.data;
+=======
+    // Hata mesajını ekrana yazdır ama botu çökertme (Acil kilide alma)
+    console.warn(`Bitget uyarısı: ${json.msg || response.statusText || "istek başarısız"}`);
+    // JSON kodunu döndür, bot devam etsin
+    return null;
+  }
+  return json.data; // <-- Burası çok önemli! Hata yoksa veriyi döndür.
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
 }
 
 function decimals(value) {
@@ -267,4 +276,8 @@ module.exports = {
   getAccountEquity,
   getOpenOrders, getUnfilledProtectionOrders, waitForOrderAndPosition,
   verifyProtectionOrders, activePositionSize,
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6

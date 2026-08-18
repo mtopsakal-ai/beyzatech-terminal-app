@@ -2,20 +2,35 @@
   "expo": {
     "name": "Beyzatech Terminal",
     "slug": "beyzatech-terminal",
+<<<<<<< HEAD
     "version": "2.4.2",
+=======
+    "version": "2.4.1",
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "icon": "./assets/icon.png",
     "android": {
       "package": "com.beyzatech.terminal",
+<<<<<<< HEAD
       "versionCode": 31,
+=======
+      "versionCode": 30,
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090D16"
       }
     },
+<<<<<<< HEAD
     "ios": {
       "bundleIdentifier": "com.beyzatech.terminal"
+=======
+    "extra": {
+      "eas": {
+        "projectId": "1318f152-c0f6-4422-a231-82741e11af35"
+      }
+>>>>>>> e2c2fbb2a1e38ddc09f7a6ab69525e18fda616f6
     }
   }
 }
