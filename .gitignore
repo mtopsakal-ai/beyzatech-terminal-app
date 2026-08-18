@@ -1,0 +1,12 @@
+.env
+server/.env
+node_modules/
+server/node_modules/
+server/data/automation-state.json
+.expo/
+android/.gradle/
+android/app/build/
+android/build/
+ios/Pods/
+dist/
+*.tmp

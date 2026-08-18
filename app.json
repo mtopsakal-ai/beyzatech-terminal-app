@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Beyzatech Terminal",
+    "slug": "beyzatech-terminal",
+    "version": "2.4.2",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.beyzatech.terminal",
+      "versionCode": 31,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090D16"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.beyzatech.terminal"
+    }
+  }
+}
